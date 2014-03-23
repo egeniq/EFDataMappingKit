@@ -17,6 +17,16 @@ typedef NS_ENUM(NSInteger, EFMappingErrorCode) {
     EFMappingUnexpectedClass = 3
 };
 
+/**
+ *  Block used to transform a value received from an external source
+ *
+ *  If for some reason the transformation cannot be performed, return a NSError instance indicating the reason. To create a dictionary representation you may be asked to perform the transformation in reverse. This is done via the reverse flag.
+ *
+ *  @param id      Value from external source
+ *  @param reverse Perform the transformation in reverse
+ *
+ *  @return Transformed value, or NSError instance if transformation failed
+ */
 typedef id (^EFMappingTransformationBlock)(id, BOOL reverse);
 
 /**
@@ -75,7 +85,7 @@ typedef id (^EFMappingTransformationBlock)(id, BOOL reverse);
 
 #pragma mark - Mappings
 /**
- *  Mappings to be used for setting values on instances of this class.
+ *  Mappings to be used for setting values on instances of this class
  *
  *  Default implementation returns nil.
  *
@@ -128,7 +138,7 @@ typedef id (^EFMappingTransformationBlock)(id, BOOL reverse);
 #pragma mark - Dictionary representation
 
 /**
- *  The keys that should be included in a dictionary representation.
+ *  The keys that should be included in a dictionary representation
  *
  *  By default returns nil, which means that all external keys defined in the mappings of the class are included.
  *
