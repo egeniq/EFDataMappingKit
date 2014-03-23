@@ -413,8 +413,12 @@ typedef NS_ENUM(NSUInteger, MappingType) {
 }
 
 #pragma mark - Dictionary representation
++ (NSArray *)dictionaryRepresentationKeys {
+    return nil;
+}
+
 - (id)dictionaryRepresentation {
-    return [self dictionaryRepresentationForKeys:nil];
+    return [self dictionaryRepresentationForKeys:[[self class] dictionaryRepresentationKeys]];
 }
 
 - (id)dictionaryRepresentationForKeys:(NSArray *)keys {

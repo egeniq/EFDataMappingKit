@@ -51,6 +51,7 @@
 		C70D5E3018DE0B2A00E7B749 /* NSObject+EFMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+EFMapping.h"; sourceTree = "<group>"; };
 		C70D5E3118DE0B2A00E7B749 /* NSObject+EFMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EFMapping.m"; sourceTree = "<group>"; };
 		C70D5E3318DE0B3A00E7B749 /* EFMappingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFMappingTest.m; sourceTree = "<group>"; };
+		C778B35918DF32EC00FFB5F2 /* EFMapping.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = EFMapping.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +81,7 @@
 		C70D5DF518DE0AE700E7B749 = {
 			isa = PBXGroup;
 			children = (
+				C778B35918DF32EC00FFB5F2 /* EFMapping.podspec */,
 				C70D5E0718DE0AE800E7B749 /* EFMapping */,
 				C70D5E2018DE0AE800E7B749 /* EFMappingTests */,
 				C70D5E0018DE0AE800E7B749 /* Frameworks */,
@@ -446,6 +448,7 @@
 				C70D5E2C18DE0AE900E7B749 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C70D5E2D18DE0AE900E7B749 /* Build configuration list for PBXNativeTarget "EFMappingTests" */ = {
 			isa = XCConfigurationList;
@@ -454,6 +457,7 @@
 				C70D5E2F18DE0AE900E7B749 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
