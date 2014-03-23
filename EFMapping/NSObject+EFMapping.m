@@ -203,8 +203,6 @@ typedef NS_ENUM(NSUInteger, MappingType) {
                 incomingObject = [self validateObject:incomingObject mapping:mapping error:&validationError];
                 if (!incomingObject) {
                     errors[mapping.internalKey] = validationError;
-                } else {
-                    incomingObject = [self transformObject:incomingObject mapping:mapping reverse:NO error:NULL];
                 }
             }
                 break;
