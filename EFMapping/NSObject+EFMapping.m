@@ -309,14 +309,26 @@ typedef NS_ENUM(NSUInteger, MappingType) {
             case MappingTypeCollection:
                 if ([mapping.collectionClass isSubclassOfClass:[NSArray class]]) {
                     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[incomingObject count]];
-                    for (id object in incomingObject) {
-                        [array addObject:[self transformObject:object mapping:mapping reverse:NO error:NULL]];
+                    for (__strong id object in incomingObject) {
+                        object = [self transformObject:object mapping:mapping reverse:NO error:NULL];
+                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && [mapping.internalClass mappings]) {
+                            id convertedObject = [[mapping.internalClass alloc] init];
+                            [convertedObject setValues:object error:error];
+                            object = convertedObject;
+                        }
+                        [array addObject:object];
                     }
                     incomingObject = [[mapping.collectionClass alloc] initWithArray:array];
                 } else if ([mapping.collectionClass isSubclassOfClass:[NSDictionary class]]) {
                     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[incomingObject count]];
                     [incomingObject enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
-                        dictionary[key] = [self transformObject:object mapping:mapping reverse:NO error:NULL];
+                        object = [self transformObject:object mapping:mapping reverse:NO error:NULL];
+                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && [mapping.internalClass mappings]) {
+                            id convertedObject = [[mapping.internalClass alloc] init];
+                            [convertedObject setValues:object error:error];
+                            object = convertedObject;
+                        }
+                        dictionary[key] = object;
                     }];
                     incomingObject = [[mapping.collectionClass alloc] initWithDictionary:dictionary];
                 } else {
