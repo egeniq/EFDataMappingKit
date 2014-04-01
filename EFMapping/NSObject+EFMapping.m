@@ -493,3 +493,40 @@ typedef NS_ENUM(NSUInteger, MappingType) {
 }
 
 @end
+
+@implementation NSArray (EFMapping)
+
+- (id)dictionaryRepresentationForKeys:(NSArray *)keys {
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[self count]];
+    for (id object in self) {
+        id representation = [object dictionaryRepresentation];
+        if (representation) {
+            [array addObject:representation];
+        } else {
+            [array addObject:[NSNull null]];
+        }
+    }
+    return [array copy];
+}
+
+@end
+
+@implementation NSDictionary (EFMapping)
+
+- (id)dictionaryRepresentationForKeys:(NSArray *)keys {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[self count]];
+    [self enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
+        id keyRepresentation = [key dictionaryRepresentation];
+        if (keyRepresentation) {
+            id representation = [object dictionaryRepresentation];
+            if (representation) {
+                dictionary[keyRepresentation] = representation;
+            } else {
+                dictionary[keyRepresentation] = [NSNull null];
+            };
+        }
+    }];
+    return [dictionary copy];
+}
+
+@end
