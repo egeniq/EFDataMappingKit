@@ -348,7 +348,7 @@ typedef NS_ENUM(NSUInteger, MappingType) {
 
 #pragma mark - Helper methods
 - (id)transformObject:(id)incomingObject mapping:(EFMapping *)mapping reverse:(BOOL)reverse error:(NSError **)error {
-    if (mapping.formatter && [incomingObject isKindOfClass:[NSString class]]) {
+    if (mapping.formatter && !reverse && [incomingObject isKindOfClass:[NSString class]]) {
         id formattedObject;
         NSString *errorDescription = nil;
         if ([mapping.formatter getObjectValue:&formattedObject forString:incomingObject errorDescription:&errorDescription]) {
@@ -357,6 +357,10 @@ typedef NS_ENUM(NSUInteger, MappingType) {
             *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingTransformationError userInfo:@{NSLocalizedDescriptionKey: errorDescription}];
             incomingObject = nil;
         }
+    } else if (mapping.formatter && reverse && [incomingObject isKindOfClass:mapping.internalClass]) {
+        NSString *formattedString;
+        formattedString = [mapping.formatter stringForObjectValue:incomingObject];
+        incomingObject = formattedString;
     }
     if (mapping.transformer) {
         incomingObject = [mapping.transformer transformedValue:incomingObject];
