@@ -24,13 +24,14 @@
 
 + (NSArray *)mappings {
     static NSArray *mappings = nil;
-    NSDateFormatter *dateFormatter = nil;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
     if (!mappings) {
         mappings = @[[EFMapping mappingForClass:[NSString class] externalKey:@"id" internalKey:@"guid"],
                      [EFMapping mappingForNumberWithExternalKey:@"pts_mine" internalKey:@"myPoints"],
                      [EFMapping mappingForClass:[NSDate class] externalKey:@"created_at" internalKey:@"creationDate" formatter:dateFormatter],
                      [EFMapping mappingForClass:[EFSample class] key:@"sample"],
-                     [EFMapping mappingArrayOfClass:[EFSample class] externalKey:@"related_samples" internalKey:@"relatedSamples"]
+                     [EFMapping mappingForArrayOfClass:[EFSample class] externalKey:@"related_samples" internalKey:@"relatedSamples"]
                      ];
     }
     return mappings;
@@ -69,14 +70,14 @@
     _sample2 = [[EFSample alloc] init];
     _validDictionary = @{@"id": @"1",
                          @"pts_mine": @10,
-                         @"created_at": [NSDate date],
+                         @"created_at": @"2014-04-01",
                          @"sample": @{@"id": @"2", @"pts_mine": @20},
                          @"related_samples": @[@{@"id": @"3", @"pts_mine": @30},
                                                @{@"id": @"4", @"pts_mine": @40}],
                          @"unknown_key": @"foobarbaz"};
     _invalidDictionary = @{@"id": @1,
                            @"pts_mine": @10,
-                           @"created_at": [NSDate date],
+                           @"created_at": @"2014-04-01",
                            @"sample": @{@"id": @"2", @"pts_mine": @20},
                            @"related_samples": @[@{@"id": @"3", @"pts_mine": @30},
                                                  @{@"id": @4, @"pts_mine": @40}]};
@@ -112,7 +113,17 @@
 }
 
 - (void)testTransformingValues {
+    NSError *error = nil;
+    BOOL valid1 = [_sample1 setValues:_validDictionary error:&error];
 
+    XCTAssertTrue(valid1, @"Expected values to be valid but found error %@", error);
+
+    XCTAssertTrue([_sample1.creationDate isKindOfClass:[NSDate class]], @"Expected a date");
+
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:_sample1.creationDate];
+    XCTAssertEqual(components.year, 2014, @"Expected year 2014");
+    XCTAssertEqual(components.month, 4, @"Expected month 4");
+    XCTAssertEqual(components.day, 1, @"Expected day 1");
 }
 
 - (void)testEncoding {

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "EFMapping"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.summary      = "Category on NSObject that maps data such as those coming from JSON onto an instance using mappings. The mappings are also used to simplify implementing the NSCoding protocol for a class, and to create a dictionary representation of an instance."
   s.homepage     = "https://github.com/Egeniq/EFMapping"
   s.license      = { :type => "MIT", :file => "LICENSE" }
