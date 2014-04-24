@@ -48,8 +48,6 @@
 		C70D5E1A18DE0AE800E7B749 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C70D5E2218DE0AE900E7B749 /* MappingKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MappingKitTests-Info.plist"; sourceTree = "<group>"; };
 		C70D5E2418DE0AE900E7B749 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		C70D5E3018DE0B2A00E7B749 /* NSObject+EFMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+EFMapping.h"; sourceTree = "<group>"; };
-		C70D5E3118DE0B2A00E7B749 /* NSObject+EFMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EFMapping.m"; sourceTree = "<group>"; };
 		C70D5E3318DE0B3A00E7B749 /* EFMappingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFMappingTest.m; sourceTree = "<group>"; };
 		C778B35918DF32EC00FFB5F2 /* MappingKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = MappingKit.podspec; sourceTree = "<group>"; };
 		C7E5452E18EA668700B56C3E /* EFAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFAppDelegate.h; sourceTree = "<group>"; };
@@ -129,8 +127,6 @@
 		C70D5E0718DE0AE800E7B749 /* EFMapping */ = {
 			isa = PBXGroup;
 			children = (
-				C70D5E3018DE0B2A00E7B749 /* NSObject+EFMapping.h */,
-				C70D5E3118DE0B2A00E7B749 /* NSObject+EFMapping.m */,
 				C7F7DA041907EBF5009E9974 /* EFMapper.h */,
 				C7F7DA051907EBF5009E9974 /* EFMapper.m */,
 				C7F7DA071907EBFE009E9974 /* EFMapping.h */,

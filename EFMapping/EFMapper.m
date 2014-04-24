@@ -36,6 +36,20 @@
     }
 }
 
+- (NSArray *)mappingsForClass:(Class)aClass {
+    NSArray *mappings = self.mappings[NSStringFromClass(aClass)];
+    if (mappings) {
+        return mappings;
+    } else {
+        Class superClass = [aClass superclass];
+        if (superClass != Nil) {
+            return [self mappingsForClass:superClass];
+        } else {
+            return nil;
+        }
+    }
+}
+
 - (void)registerInitializer:(EFMappingInitializerBlock)initializerBlock forClass:(Class)aClass {
     if (initializerBlock) {
         self.initializers[NSStringFromClass(aClass)] = [initializerBlock copy];
@@ -44,10 +58,24 @@
     }
 }
 
+- (EFMappingInitializerBlock)initializerForClass:(Class)aClass {
+    EFMappingInitializerBlock initializer = self.initializers[NSStringFromClass(aClass)];
+    if (initializer) {
+        return initializer;
+    } else {
+        Class superClass = [aClass superclass];
+        if (superClass != Nil) {
+            return [self initializerForClass:superClass];
+        } else {
+            return nil;
+        }
+    }
+}
+
 - (BOOL)validateValues:(NSDictionary *)values forClass:(Class)aClass error:(NSError **)error {
     NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
-    NSArray *mappings = self.mappings[NSStringFromClass(aClass)];
+    NSArray *mappings = [self mappingsForClass:aClass];
     for (EFMapping *mapping in mappings) {
         id incomingObject = values[mapping.externalKey];
 //        if (!incomingObject) {
@@ -151,7 +179,7 @@
         return NO;
     }
 
-    NSArray *mappings = self.mappings[NSStringFromClass([object class])];
+    NSArray *mappings = [self mappingsForClass:[object class]];
     for (EFMapping *mapping in mappings) {
         id incomingObject = values[mapping.externalKey];
         if (!incomingObject) {
@@ -170,8 +198,8 @@
                 incomingObject = [self transformObject:incomingObject mapping:mapping reverse:NO error:NULL];
                 if (![incomingObject isKindOfClass:mapping.internalClass]) {
                     // if dictionary convert
-                    if ([incomingObject isKindOfClass:[NSDictionary class]] && self.mappings[NSStringFromClass(mapping.internalClass)]) {
-                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && self.mappings[NSStringFromClass(mapping.internalClass)]) {
+                    if ([incomingObject isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
+                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
                             incomingObject = [self objectOfClass:mapping.internalClass withValues:incomingObject error:error];
                         }
                         // TODO: Check for nil!
@@ -185,7 +213,7 @@
                     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[incomingObject count]];
                     for (__strong id object in incomingObject) {
                         object = [self transformObject:object mapping:mapping reverse:NO error:NULL];
-                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && self.mappings[NSStringFromClass(mapping.internalClass)]) {
+                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
                             object = [self objectOfClass:mapping.internalClass withValues:incomingObject error:error];
                         }
                         // TODO: Check for nil!
@@ -196,7 +224,7 @@
                     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[incomingObject count]];
                     [incomingObject enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
                         object = [self transformObject:object mapping:mapping reverse:NO error:NULL];
-                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && self.mappings[NSStringFromClass(mapping.internalClass)]) {
+                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
                             object = [self objectOfClass:mapping.internalClass withValues:incomingObject error:error];
                         }
                         // TODO: Check for nil!
@@ -219,7 +247,7 @@
 }
 
 - (id)objectOfClass:(Class)aClass withValues:(NSDictionary *)values error:(NSError **)error {
-    EFMappingInitializerBlock initializer = self.initializers[NSStringFromClass(aClass)];
+    EFMappingInitializerBlock initializer = [self initializerForClass:aClass];
     id object = nil;
     if (initializer) {
         object = initializer(aClass, values);
@@ -277,7 +305,7 @@
     }
     if (![incomingObject isKindOfClass:mapping.internalClass]) {
         // if dictionary try to convert
-        if ([incomingObject isKindOfClass:[NSDictionary class]] && self.mappings[NSStringFromClass(mapping.internalClass)]) {
+        if ([incomingObject isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
             NSError *validationError;
             BOOL valid = [self validateValues:incomingObject forClass:mapping.internalClass error:&validationError];
             if (!valid) {
@@ -285,7 +313,7 @@
                 return nil;
             }
         } else {
-            NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but %@ instance%@", incomingObject, NSStringFromClass([incomingObject class]), mapping.internalKey, NSStringFromClass(mapping.internalClass), self.mappings[NSStringFromClass(mapping.internalClass)] ? @" or NSDictionary" : @""];
+            NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but %@ instance%@", incomingObject, NSStringFromClass([incomingObject class]), mapping.internalKey, NSStringFromClass(mapping.internalClass), [self mappingsForClass:mapping.internalClass] ? @" or NSDictionary" : @""];
             NSError *validationError = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description}];
             *error = validationError;
             return nil;
@@ -296,52 +324,21 @@
 
 
 - (void)encodeObject:(id)object withCoder:(NSCoder *)aCoder {
-
-}
-- (void)decodeObject:(id)object withCoder:(NSCoder *)aDecoder {
-
-}
-
-- (id)copyObject:(id)object deepCopy:(BOOL)deepCopy {
-    return nil;
-}
-
-- (void)registerDictionaryRepresentationKeys:(NSArray *)keys forClass:(Class)aClass {
-
-}
-
-- (id)dictionaryRepresentationOfObject:(id)object forKeys:(NSArray *)keys {
-    return nil;
-}
-
-- (id)dictionaryRepresentationOfObject:(id)object {
-    return nil;
-}
-
-@end
-
-/*
-@implementation NSObject (EFMapping)
-
-
-
-#pragma mark - NSCoding support
-- (void)encodeUsingMappingsWithCoder:(NSCoder *)aCoder {
-    NSArray *mappings = [[self class] mappings];
+    NSArray *mappings = [self mappingsForClass:[object class]];
     for (EFMapping *mapping in mappings) {
-        [aCoder encodeObject:[self valueForKey:mapping.internalKey] forKey:mapping.internalKey];
+        [aCoder encodeObject:[object valueForKey:mapping.internalKey] forKey:mapping.internalKey];
     }
 }
 
-- (void)decodeUsingMappingsWithCoder:(NSCoder *)aDecoder {
-    NSArray *mappings = [[self class] mappings];
+- (void)decodeObject:(id)object withCoder:(NSCoder *)aDecoder {
+    NSArray *mappings = [self mappingsForClass:[object class]];
     for (EFMapping *mapping in mappings) {
         switch (mapping.type) {
             case MappingTypeId:
-                [self setValue:[aDecoder decodeObjectOfClass:mapping.internalClass forKey:mapping.internalKey] forKey:mapping.internalKey];
+                [object setValue:[aDecoder decodeObjectOfClass:mapping.internalClass forKey:mapping.internalKey] forKey:mapping.internalKey];
                 break;
             case MappingTypeCollection:
-                [self setValue:[aDecoder decodeObjectOfClass:mapping.collectionClass forKey:mapping.internalKey] forKey:mapping.internalKey];
+                [object setValue:[aDecoder decodeObjectOfClass:mapping.collectionClass forKey:mapping.internalKey] forKey:mapping.internalKey];
                 break;
             default:
                 break;
@@ -349,17 +346,63 @@
     }
 }
 
-#pragma mark - Dictionary representation
-+ (NSArray *)dictionaryRepresentationKeys {
-    return nil;
+// Feature idea
+//- (id)copyObject:(id)object deepCopy:(BOOL)deepCopy {
+//    
+//}
+
+- (void)registerDictionaryRepresentationKeys:(NSArray *)keys forClass:(Class)aClass {
+    if (keys) {
+        self.dictionaryKeys[NSStringFromClass(aClass)] = keys;
+    } else {
+        [self.dictionaryKeys removeObjectForKey:NSStringFromClass(aClass)];
+    }
 }
 
-- (id)dictionaryRepresentation {
-    return [self dictionaryRepresentationForKeys:[[self class] dictionaryRepresentationKeys]];
+- (NSArray *)dictionaryRepresentationKeysForClass:(Class)aClass {
+    NSArray *mappings = self.mappings[NSStringFromClass(aClass)];
+    if (mappings) {
+        return mappings;
+    } else {
+        Class superClass = [aClass superclass];
+        if (superClass != Nil) {
+            return [self dictionaryRepresentationKeysForClass:superClass];
+        } else {
+            return nil;
+        }
+    }
 }
 
-- (id)dictionaryRepresentationForKeys:(NSArray *)keys {
-    NSArray *mappings = [[self class] mappings];
+- (id)dictionaryRepresentationOfObject:(id)object forKeys:(NSArray *)keys {
+    // if array
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[self count]];
+    for (id object in self) {
+        id representation = [object dictionaryRepresentation];
+        if (representation) {
+            [array addObject:representation];
+        } else {
+            [array addObject:[NSNull null]];
+        }
+    }
+    return [array copy];
+
+    // if dictionary
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[self count]];
+    [self enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
+        id keyRepresentation = [key dictionaryRepresentation];
+        if (keyRepresentation) {
+            id representation = [object dictionaryRepresentation];
+            if (representation) {
+                dictionary[keyRepresentation] = representation;
+            } else {
+                dictionary[keyRepresentation] = [NSNull null];
+            };
+        }
+    }];
+    return [dictionary copy];
+
+    // else
+    NSArray *mappings = [self mappingsForClass:[object class]];
     if (mappings) {
         NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
         for (EFMapping *mapping in mappings) {
@@ -419,42 +462,8 @@
     }
 }
 
-@end
-
-@implementation NSArray (EFMapping)
-
-- (id)dictionaryRepresentationForKeys:(NSArray *)keys {
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[self count]];
-    for (id object in self) {
-        id representation = [object dictionaryRepresentation];
-        if (representation) {
-            [array addObject:representation];
-        } else {
-            [array addObject:[NSNull null]];
-        }
-    }
-    return [array copy];
+- (id)dictionaryRepresentationOfObject:(id)object {
+    return [self dictionaryRepresentationOfObject:object forKeys:[self dictionaryRepresentationKeysForClass:[object class]]];
 }
 
 @end
-
-@implementation NSDictionary (EFMapping)
-
-- (id)dictionaryRepresentationForKeys:(NSArray *)keys {
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[self count]];
-    [self enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
-        id keyRepresentation = [key dictionaryRepresentation];
-        if (keyRepresentation) {
-            id representation = [object dictionaryRepresentation];
-            if (representation) {
-                dictionary[keyRepresentation] = representation;
-            } else {
-                dictionary[keyRepresentation] = [NSNull null];
-            };
-        }
-    }];
-    return [dictionary copy];
-}
-
-@end
-*/
