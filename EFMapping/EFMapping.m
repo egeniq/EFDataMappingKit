@@ -1,41 +1,20 @@
 //
-//  NSObject+EFMapping.h
-//  EFMapping
+//  EFMapping.m
+//  MappingKit
 //
-//  Created by Johan Kool on 20/3/2014.
-//  Copyright (c) 2014 Johan Kool. All rights reserved.
+//  Created by Johan Kool on 23/4/2014.
+//  Copyright (c) 2014 Egeniq. All rights reserved.
 //
 
-#import "NSObject+EFMapping.h"
-
-
-
-typedef NS_ENUM(NSUInteger, MappingType) {
-    MappingTypeId,
-    MappingTypeCollection
-};
-
-@interface EFMapping ()
-
-@property (nonatomic, assign) NSUInteger type;
-@property (nonatomic, copy) NSString *externalKey;
-@property (nonatomic, copy) NSString *internalKey;
-@property (nonatomic, assign) Class collectionClass;
-@property (nonatomic, assign) Class internalClass;
-
-@property (nonatomic, strong) NSFormatter *formatter;
-@property (nonatomic, strong) NSValueTransformer *transformer;
-@property (nonatomic, copy) EFMappingTransformationBlock transformationBlock;
-
-@end
+#import "EFMapping.h"
 
 @implementation EFMapping
 
-+ (instancetype)mappingForType:(MappingType)type externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey internalClass:(Class)internalClass collectionClass:(Class)collectionClass formatter:(NSFormatter *)formatter transformer:(NSValueTransformer *)transformer transformationBlock:(EFMappingTransformationBlock)transformationBlock {
-
++ (instancetype)mappingForType:(MappingType)type externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey internalClass:(Class)internalClass collectionClass:(Class)collectionClass formatter:(NSFormatter *)formatter transformer:(NSValueTransformer *)transformer transformationBlock:(EFMappingTransformationBlock)transformationBlock  {
+    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:collectionClass formatter:formatter transformer:transformer transformationBlock:transformationBlock requires:nil];
 }
 
-+ (instancetype)mappingForType:(MappingType)type externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey internalClass:(Class)internalClass collectionClass:(Class)collectionClass formatter:(NSFormatter *)formatter transformer:(NSValueTransformer *)transformer transformationBlock:(EFMappingTransformationBlock)transformationBlock {
++ (instancetype)mappingForType:(MappingType)type externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey internalClass:(Class)internalClass collectionClass:(Class)collectionClass formatter:(NSFormatter *)formatter transformer:(NSValueTransformer *)transformer transformationBlock:(EFMappingTransformationBlock)transformationBlock requires:(id <EFRequires>)requires {
     NSParameterAssert(externalKey);
     NSParameterAssert(internalKey);
     EFMapping *mapping = [[[self class] alloc] init];
@@ -47,6 +26,7 @@ typedef NS_ENUM(NSUInteger, MappingType) {
     mapping.formatter = formatter;
     mapping.transformer = transformer;
     mapping.transformationBlock = transformationBlock;
+    mapping.requires = requires;
     return mapping;
 }
 
@@ -100,6 +80,11 @@ typedef NS_ENUM(NSUInteger, MappingType) {
 + (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey {
     return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil];
 }
+
++ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey requires:(id <EFRequires>)requirements {
+    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil requires:requirements];
+}
+
 
 + (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter {
     return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:formatter transformer:nil transformationBlock:nil];
@@ -177,5 +162,3 @@ typedef NS_ENUM(NSUInteger, MappingType) {
 }
 
 @end
-
-
