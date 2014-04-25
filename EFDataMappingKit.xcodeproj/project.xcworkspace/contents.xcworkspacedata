@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:EFMapping.xcodeproj">
+      location = "self:EFDataMappingKit.xcodeproj">
    </FileRef>
 </Workspace>

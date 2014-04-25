@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "NSObject+EFMapping.h"
+#import "MappingKit.h"
 
 @interface EFSample : NSObject
 
@@ -22,123 +22,153 @@
 
 @implementation EFSample
 
-+ (NSArray *)mappings {
-    static NSArray *mappings = nil;
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    if (!mappings) {
-        mappings = @[[EFMapping mappingForClass:[NSString class] externalKey:@"id" internalKey:@"guid"],
-                     [EFMapping mappingForNumberWithExternalKey:@"pts_mine" internalKey:@"myPoints"],
-                     [EFMapping mappingForClass:[NSDate class] externalKey:@"created_at" internalKey:@"creationDate" formatter:dateFormatter],
-                     [EFMapping mappingForClass:[EFSample class] key:@"sample"],
-                     [EFMapping mappingForArrayOfClass:[EFSample class] externalKey:@"related_samples" internalKey:@"relatedSamples"]
-                     ];
-    }
-    return mappings;
-}
-
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super init];
     if (self) {
-        [self decodeUsingMappingsWithCoder:aDecoder];
+        [[EFMapper sharedInstance] decodeObject:self withCoder:aDecoder];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeInteger:0 forKey:@"version"];
-    [self encodeUsingMappingsWithCoder:aCoder];
+    [[EFMapper sharedInstance] encodeObject:self withCoder:aCoder];
 }
 
 @end
 
-@interface EFMappingTest : XCTestCase {
-    EFSample *_sample1;
-    EFSample *_sample2;
-    NSDictionary *_validDictionary;
-    NSDictionary *_invalidDictionary;
-}
+@interface EFMappingTest : XCTestCase
 
 @end
 
 @implementation EFMappingTest
 
-- (void)setUp {
-    [super setUp];
-
-    _sample1 = [[EFSample alloc] init];
-    _sample2 = [[EFSample alloc] init];
-    _validDictionary = @{@"id": @"1",
-                         @"pts_mine": @10,
-                         @"created_at": @"2014-04-01",
-                         @"sample": @{@"id": @"2", @"pts_mine": @20},
-                         @"related_samples": @[@{@"id": @"3", @"pts_mine": @30},
-                                               @{@"id": @"4", @"pts_mine": @40}],
-                         @"unknown_key": @"foobarbaz"};
-    _invalidDictionary = @{@"id": @1,
-                           @"pts_mine": @10,
-                           @"created_at": @"2014-04-01",
-                           @"sample": @{@"id": @"2", @"pts_mine": @20},
-                           @"related_samples": @[@{@"id": @"3", @"pts_mine": @30},
-                                                 @{@"id": @4, @"pts_mine": @40}]};
-}
-
-- (void)tearDown {
-    _sample1 = nil;
-    _sample2 = nil;
-    _validDictionary = nil;
-    _invalidDictionary = nil;
-
-    [super tearDown];
-}
-
 - (void)testValidatingValues {
-    NSError *error = nil;
-    BOOL valid1 = [_sample1 validateValues:_validDictionary error:&error];
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m) {
+        m.internalClass = [NSString class];
+        m.externalKey = @"id";
+        m.internalKey = @"guid";
+        m.requires = [EFRequires exists];
+    }]] forClass:[EFSample class]];
 
-    XCTAssertTrue(valid1, @"Expected values to be valid but found error %@", error);
+    NSError *error;
+    BOOL valid = [mapper validateValues:@{@"id": @"1"} forClass:[EFSample class] error:&error];
+    XCTAssertTrue(valid, @"guid error: %@", EFPrettyMappingError(error));
 
-    BOOL valid2 = [_sample2 validateValues:_invalidDictionary error:&error];
+    valid = [mapper validateValues:@{@"id": @1} forClass:[EFSample class] error:&error];
+    XCTAssertFalse(valid, @"Expected values to be invalid but found no error");
 
-    XCTAssertFalse(valid2, @"Expected values to be invalid but found no error %@", error);
+    valid = [mapper validateValues:@{@"id": [NSNull null]} forClass:[EFSample class] error:&error];
+    XCTAssertFalse(valid, @"Expected values to be invalid but found no error");
+
+    valid = [mapper validateValues:@{} forClass:[EFSample class] error:&error];
+    XCTAssertFalse(valid, @"Expected values to be invalid but found no error");
 }
 
 - (void)testSettingValues {
-    [_sample1 setValues:_validDictionary error:NULL];
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m) {
+        m.internalClass = [NSString class];
+        m.externalKey = @"id";
+        m.internalKey = @"guid";
+        m.requires = [EFRequires exists];
+    }]] forClass:[EFSample class]];
 
-    XCTAssertEqualObjects(_sample1.guid, @"1", @"guid");
-    XCTAssertEqual(_sample1.myPoints, 10, @"Expected points");
-    XCTAssertEqual([_sample1.relatedSamples count], 2, @"Expected 2 related samples");
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1"} error:&error];
+    XCTAssertEqualObjects(sample.guid, @"1", @"guid error: %@", EFPrettyMappingError(error));
 
+    EFSample *sample2 = [mapper objectOfClass:[EFSample class] withValues:@{@"id": [NSNull null]} error:&error];
+    XCTAssertNil(sample2, @"Expected error for missing guid");
 }
 
 - (void)testTransformingValues {
-    NSError *error = nil;
-    BOOL valid1 = [_sample1 setValues:_validDictionary error:&error];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
 
-    XCTAssertTrue(valid1, @"Expected values to be valid but found error %@", error);
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m){m.internalClass = [NSString class]; m.externalKey = @"id"; m.internalKey = @"guid"; m.requires = [EFRequires exists];}],
+                               [EFMapping mapping:^(EFMapping *m){m.internalClass = [NSDate class]; m.externalKey = @"created_at"; m.internalKey = @"creationDate"; m.formatter = dateFormatter;}]
+                               ] forClass:[EFSample class]];
 
-    XCTAssertTrue([_sample1.creationDate isKindOfClass:[NSDate class]], @"Expected a date");
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1", @"created_at": @"2014-04-01"} error:&error];
+    XCTAssertNotNil(sample, @"Expected values to be valid but found error %@", EFPrettyMappingError(error));
+    XCTAssertTrue([sample.creationDate isKindOfClass:[NSDate class]], @"Expected a date");
 
-    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:_sample1.creationDate];
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:sample.creationDate];
     XCTAssertEqual(components.year, 2014, @"Expected year 2014");
     XCTAssertEqual(components.month, 4, @"Expected month 4");
     XCTAssertEqual(components.day, 1, @"Expected day 1");
 }
 
 - (void)testEncoding {
-
+#warning Missing test
 }
 
 - (void)testEncodingSubclasses {
-
+#warning Missing test
 }
 
 - (void)testCreatingDictionaryRepresentation {
-    [_sample1 setValues:_validDictionary error:NULL];
-    NSDictionary *dictionaryRepresentation = [_sample1 dictionaryRepresentation];
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m){m.internalClass = [NSString class]; m.externalKey = @"id"; m.internalKey = @"guid"; m.requires = [EFRequires exists];}],
+                               [EFMapping mappingForArrayOfClass:[EFSample class] externalKey:@"children" internalKey:@"relatedSamples"]] forClass:[EFSample class]];
 
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1", @"children": @[@{@"id": @"2"}, @{@"id": @"3", @"children": @[@{@"id": @"4"}, @{@"id": @"5"}]}]} error:&error];
+    XCTAssertNotNil(sample, @"Map error: %@", EFPrettyMappingError(error));
+
+    id dictionaryRepresentation = [mapper dictionaryRepresentationOfObject:sample];
     XCTAssertNotNil(dictionaryRepresentation, @"Expected something");
+    XCTAssertTrue([dictionaryRepresentation isKindOfClass:[NSDictionary class]], @"Expected dict");
+    XCTAssertEqual([dictionaryRepresentation[@"children"] count], 2, @"Expected 2 children");
+    XCTAssertEqual([dictionaryRepresentation[@"children"][1][@"children"] count], 2, @"Expected 2 grandchildren");
+    XCTAssertEqualObjects(dictionaryRepresentation[@"children"][1][@"children"][1][@"id"], @"5", @"Expected id of grandchild 2 to be 5");
+}
+
+- (void)testRequirements {
+    XCTAssertTrue([[EFRequires exists] evaluateForValue:@"bla"], @"Value exist");
+    XCTAssertFalse([[EFRequires exists] evaluateForValue:nil], @"Value exist");
+
+    XCTAssertTrue([[EFRequires passes:^BOOL(id value) {
+        return YES;
+    }] evaluateForValue:@"bla"], @"Value passes");
+    XCTAssertFalse([[EFRequires passes:^BOOL(id value) {
+        return NO;
+    }] evaluateForValue:@"bla"], @"Value passes");
+
+    XCTAssertTrue([[EFRequires largerThan:@2] evaluateForValue:@3], @"Value larger than");
+    XCTAssertFalse([[EFRequires largerThan:@2] evaluateForValue:@2], @"Value larger than");
+    XCTAssertFalse([[EFRequires largerThan:@2] evaluateForValue:@1], @"Value larger than");
+
+    XCTAssertTrue([[EFRequires largerThanOrEqualTo:@2] evaluateForValue:@3], @"Value larger than or equal to");
+    XCTAssertTrue([[EFRequires largerThanOrEqualTo:@2] evaluateForValue:@2], @"Value larger than or equal to");
+    XCTAssertFalse([[EFRequires largerThanOrEqualTo:@2] evaluateForValue:@1], @"Value larger than or equal to");
+
+    XCTAssertFalse([[EFRequires equalTo:@2] evaluateForValue:@3], @"Value equal to");
+    XCTAssertTrue([[EFRequires equalTo:@2] evaluateForValue:@2], @"Value equal to");
+    XCTAssertFalse([[EFRequires equalTo:@2] evaluateForValue:@1], @"Value equal to");
+
+    XCTAssertFalse([[EFRequires smallerThan:@2] evaluateForValue:@3], @"Value smaller than");
+    XCTAssertFalse([[EFRequires smallerThan:@2] evaluateForValue:@2], @"Value smaller than");
+    XCTAssertTrue([[EFRequires smallerThan:@2] evaluateForValue:@1], @"Value smaller than");
+
+    XCTAssertFalse([[EFRequires smallerThanOrEqualTo:@2] evaluateForValue:@3], @"Value smaller than or equal to");
+    XCTAssertTrue([[EFRequires smallerThanOrEqualTo:@2] evaluateForValue:@2], @"Value smaller than or equal to");
+    XCTAssertTrue([[EFRequires smallerThanOrEqualTo:@2] evaluateForValue:@1], @"Value smaller than or equal to");
+
+    NSArray *array = @[[EFRequires largerThan:@2], [EFRequires smallerThan:@4]];
+    XCTAssertTrue([array evaluateForValue:@3], @"Value inside range");
+    XCTAssertFalse([array evaluateForValue:@1], @"Value outside range");
+
+    XCTAssertFalse([[EFRequires not:array] evaluateForValue:@3], @"Value inverted");
+    XCTAssertTrue([[EFRequires not:array] evaluateForValue:@1], @"Value inverted");
+
+    XCTAssertTrue([[EFRequires either:array or:[EFRequires equalTo:@10]] evaluateForValue:@3], @"Value or");
+    XCTAssertTrue([[EFRequires either:array or:[EFRequires equalTo:@10]] evaluateForValue:@10], @"Value or");
+    XCTAssertFalse([[EFRequires either:array or:[EFRequires equalTo:@10]] evaluateForValue:@1], @"Value or");
 }
 
 @end
