@@ -1,12 +1,12 @@
 //
 //  EFMapping.h
-//  MappingKit
+//  EFDataMappingKit
 //
 //  Created by Johan Kool on 23/4/2014.
 //  Copyright (c) 2014 Egeniq. All rights reserved.
 //
 
-#import "MappingKit.h"
+#import "EFRequires.h"
 
 /**
  *  Block used to transform a value received from an external source

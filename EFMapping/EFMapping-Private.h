@@ -1,12 +1,12 @@
 //
 //  EFMapping-Private.h
-//  MappingKit
+//  EFDataMappingKit
 //
 //  Created by Johan Kool on 25/4/2014.
 //  Copyright (c) 2014 Egeniq. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "EFMapping.h"
 
 typedef NS_ENUM(NSUInteger, EFMappingType) {
     EFMappingTypeId,

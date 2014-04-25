@@ -1,12 +1,10 @@
 //
 //  EFMapper.h
-//  MappingKit
+//  EFDataMappingKit
 //
 //  Created by Johan Kool on 23/4/2014.
 //  Copyright (c) 2014 Egeniq. All rights reserved.
 //
-
-#import "MappingKit.h"
 
 /**
  *  Block called when the mapper needs to instantiate a class

@@ -1,6 +1,6 @@
 //
 //  EFMapper.m
-//  MappingKit
+//  EFDataMappingKit
 //
 //  Created by Johan Kool on 23/4/2014.
 //  Copyright (c) 2014 Egeniq. All rights reserved.
@@ -9,6 +9,7 @@
 #import "EFMapper.h"
 
 #import "EFMapping-Private.h"
+#import "EFMappingError.h"
 
 @interface EFMapper ()
 
@@ -99,10 +100,10 @@
     NSArray *mappings = [self mappingsForClass:aClass];
     for (EFMapping *mapping in mappings) {
         id incomingObject = values[mapping.externalKey];
-//        if (!incomingObject) {
-//            // not in dictionary, leave as is
-//            continue;
-//        }
+        //        if (!incomingObject) {
+        //            // not in dictionary, leave as is
+        //            continue;
+        //        }
 
         if ([incomingObject isKindOfClass:[NSNull class]]) {
             incomingObject = nil;
@@ -121,10 +122,12 @@
 
         switch (mapping.type) {
             case EFMappingTypeId: {
-                NSError *validationError = nil;
-                incomingObject = [self validateObject:incomingObject mapping:mapping error:&validationError];
-                if (!incomingObject) {
-                    errors[mapping.internalKey] = validationError;
+                if (incomingObject) {
+                    NSError *validationError = nil;
+                    incomingObject = [self validateObject:incomingObject mapping:mapping error:&validationError];
+                    if (!incomingObject) {
+                        errors[mapping.internalKey] = validationError;
+                    }
                 }
             }
                 break;
@@ -132,13 +135,13 @@
                 if ([mapping.collectionClass isSubclassOfClass:[NSArray class]] && [incomingObject isKindOfClass:[NSArray class]]) {
                     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[incomingObject count]];
                     NSMutableArray *errorsInArray = [NSMutableArray array];
-                    for (__strong id object in incomingObject) {
+                    for (__strong id child in incomingObject) {
                         NSError *validationError = nil;
-                        object = [self validateObject:object mapping:mapping error:&validationError];
-                        if (!object) {
+                        child = [self validateObject:child mapping:mapping error:&validationError];
+                        if (!child) {
                             [errorsInArray addObject:validationError];
                         } else {
-                            [array addObject:object];
+                            [array addObject:child];
                         }
                     }
                     if ([errorsInArray count] > 0) {
@@ -150,13 +153,13 @@
                 } else if ([mapping.collectionClass isSubclassOfClass:[NSDictionary class]] && [incomingObject isKindOfClass:[NSDictionary class]]) {
                     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[incomingObject count]];
                     NSMutableDictionary *errorsInDictionary = [NSMutableDictionary dictionary];
-                    [incomingObject enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
+                    [incomingObject enumerateKeysAndObjectsUsingBlock:^(id key, id child, BOOL *stop) {
                         NSError *validationError = nil;
-                        object = [self validateObject:object mapping:mapping error:&validationError];
-                        if (!object) {
+                        child = [self validateObject:object mapping:mapping error:&validationError];
+                        if (!child) {
                             errorsInDictionary[key] = validationError;
                         } else {
-                            dictionary[key] = object;
+                            dictionary[key] = child;
                         }
                     }];
                     if ([errorsInDictionary count] > 0) {
@@ -375,10 +378,10 @@
 
 // Feature idea
 //- (id)copyObject:(id)object deepCopy:(BOOL)deepCopy {
-//    
+//
 //}
 
-#pragma mark - Dictionary representation 
+#pragma mark - Dictionary representation
 - (void)registerDictionaryRepresentationKeys:(NSArray *)keys forClass:(Class)aClass {
     if (keys) {
         self.dictionaryKeys[NSStringFromClass(aClass)] = keys;
