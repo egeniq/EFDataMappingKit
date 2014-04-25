@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios
   s.ios.deployment_target = "5.1.1"
   s.source       = { :git => "https://github.com/Egeniq/EFMapping.git", :tag => s.version.to_s }
-  s.public_header_files = 'EFMapping/NSObject+EFMapping.h'
-  s.source_files = 'EFMapping/NSObject+EFMapping.{h,m}'
+  s.public_header_files = 'EFMapping/*.h'
+  s.source_files = 'EFMapping/*.{h,m}'
   s.requires_arc = true
 end
