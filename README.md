@@ -7,4 +7,4 @@ REST apis are beautiful and easily parsed, but even with pure REST apis there is
 
 We've been using some simple mapping mechanisms that allow us to easily and declaratively map data from one format to another. 
 
-We'll have to add documentation and it's far from ready, but we thought we'd share it anyway because it may benefit others.
+We'll have to add some getting started documentation and it's far from ready, but we thought we'd share it anyway because it may benefit others.
