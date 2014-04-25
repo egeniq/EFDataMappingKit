@@ -229,11 +229,12 @@
                 if (![incomingObject isKindOfClass:mapping.internalClass]) {
                     // if dictionary convert
                     if ([incomingObject isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
-                        if (![incomingObject isKindOfClass:mapping.internalClass] && [object isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
+                        if (![incomingObject isKindOfClass:mapping.internalClass] && [incomingObject isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
                             incomingObject = [self objectOfClass:mapping.internalClass withValues:incomingObject error:error];
                         }
                         // TODO: Check for nil!
                     } else {
+                        // TODO: Use default?
                         continue;
                     }
                 }
