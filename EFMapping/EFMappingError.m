@@ -27,7 +27,7 @@ NSString* EFPrettyMappingError(NSError *error) {
                 }];
             }
         } else {
-            // Do some recursive shit here!
+            // Do some recursive stuff here!
         }
         [string appendString:@"\n"];
         return string;

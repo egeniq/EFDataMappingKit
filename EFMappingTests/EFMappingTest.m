@@ -22,103 +22,58 @@
 
 @implementation EFSample
 
-+ (NSArray *)mappings {
-    static NSArray *mappings = nil;
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    if (!mappings) {
-        mappings = @[[EFMapping mappingForClass:[NSString class] externalKey:@"id" internalKey:@"guid"],
-                     [EFMapping mappingForNumberWithExternalKey:@"pts_mine" internalKey:@"myPoints"],
-                     [EFMapping mappingForClass:[NSDate class] externalKey:@"created_at" internalKey:@"creationDate" formatter:dateFormatter],
-                     [EFMapping mappingForClass:[EFSample class] key:@"sample"],
-                     [EFMapping mappingForArrayOfClass:[EFSample class] externalKey:@"related_samples" internalKey:@"relatedSamples"],
-                     [EFMapping mappingForClass:[NSString class]
-                                    externalKey:@"id2"
-                                    internalKey:@"guid2"
-                                       requires:[EFRequires exists]],
-                     [EFMapping mappingForClass:[NSNumber class]
-                                    externalKey:@"id3"
-                                    internalKey:@"guid3"
-                                       requires:@[[EFRequires exists], [EFRequires largerThan:@0], [EFRequires smallerThan:@1000]]],
-                     [EFMapping mappingForClass:[NSNumber class]
-                                    externalKey:@"id4"
-                                    internalKey:@"guid4"
-                                       requires:@[[EFRequires exists], [EFRequires either:[EFRequires equalTo:@2000]
-                                                                                       or:@[[EFRequires largerThan:@0], [EFRequires smallerThanOrEqualTo:@1000]]]]]
-                     ];
-    }
-    return mappings;
-}
-
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super init];
     if (self) {
-        //       [self decodeUsingMappingsWithCoder:aDecoder];
+        [[EFMapper sharedInstance] decodeObject:self withCoder:aDecoder];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeInteger:0 forKey:@"version"];
-    //    [self encodeUsingMappingsWithCoder:aCoder];
+    [[EFMapper sharedInstance] encodeObject:self withCoder:aCoder];
 }
 
 @end
 
-@interface EFMappingTest : XCTestCase {
-    EFSample *_sample1;
-    EFSample *_sample2;
-    NSDictionary *_validDictionary;
-    NSDictionary *_invalidDictionary;
-}
+@interface EFMappingTest : XCTestCase
 
 @end
 
 @implementation EFMappingTest
 
-- (void)setUp {
-    [super setUp];
-
-    _sample1 = [[EFSample alloc] init];
-    _sample2 = [[EFSample alloc] init];
-    _validDictionary = @{@"id": @"1",
-                         @"pts_mine": @10,
-                         @"created_at": @"2014-04-01",
-                         @"sample": @{@"id": @"2", @"pts_mine": @20},
-                         @"related_samples": @[@{@"id": @"3", @"pts_mine": @30},
-                                               @{@"id": @"4", @"pts_mine": @40}],
-                         @"unknown_key": @"foobarbaz"};
-    _invalidDictionary = @{@"id": @1,
-                           @"pts_mine": @10,
-                           @"created_at": @"2014-04-01",
-                           @"sample": @{@"id": @"2", @"pts_mine": @20},
-                           @"related_samples": @[@{@"id": @"3", @"pts_mine": @30},
-                                                 @{@"id": @4, @"pts_mine": @40}]};
-}
-
-- (void)tearDown {
-    _sample1 = nil;
-    _sample2 = nil;
-    _validDictionary = nil;
-    _invalidDictionary = nil;
-
-    [super tearDown];
-}
-
 - (void)testValidatingValues {
-//    NSError *error = nil;
-//    BOOL valid1 = [_sample1 validateValues:_validDictionary error:&error];
-//
-//    XCTAssertTrue(valid1, @"Expected values to be valid but found error %@", error);
-//
-//    BOOL valid2 = [_sample2 validateValues:_invalidDictionary error:&error];
-//
-//    XCTAssertFalse(valid2, @"Expected values to be invalid but found no error %@", error);
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m) {
+        m.internalClass = [NSString class];
+        m.externalKey = @"id";
+        m.internalKey = @"guid";
+        m.requires = [EFRequires exists];
+    }]] forClass:[EFSample class]];
+
+    NSError *error;
+    BOOL valid = [mapper validateValues:@{@"id": @"1"} forClass:[EFSample class] error:&error];
+    XCTAssertTrue(valid, @"guid error: %@", EFPrettyMappingError(error));
+
+    valid = [mapper validateValues:@{@"id": @1} forClass:[EFSample class] error:&error];
+    XCTAssertFalse(valid, @"Expected values to be invalid but found no error");
+
+    valid = [mapper validateValues:@{@"id": [NSNull null]} forClass:[EFSample class] error:&error];
+    XCTAssertFalse(valid, @"Expected values to be invalid but found no error");
+
+    valid = [mapper validateValues:@{} forClass:[EFSample class] error:&error];
+    XCTAssertFalse(valid, @"Expected values to be invalid but found no error");
 }
 
 - (void)testSettingValues {
     EFMapper *mapper = [[EFMapper alloc] init];
-    [mapper registerMappings:@[[EFMapping mappingForClass:[NSString class] externalKey:@"id" internalKey:@"guid" requires:[EFRequires exists]]] forClass:[EFSample class]];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m) {
+        m.internalClass = [NSString class];
+        m.externalKey = @"id";
+        m.internalKey = @"guid";
+        m.requires = [EFRequires exists];
+    }]] forClass:[EFSample class]];
 
     NSError *error;
     EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1"} error:&error];
@@ -126,36 +81,51 @@
 
     EFSample *sample2 = [mapper objectOfClass:[EFSample class] withValues:@{@"id": [NSNull null]} error:&error];
     XCTAssertNil(sample2, @"Expected error for missing guid");
-    NSLog(@"%@", EFPrettyMappingError(error));
 }
 
 - (void)testTransformingValues {
-//    NSError *error = nil;
-//    BOOL valid1 = [_sample1 setValues:_validDictionary error:&error];
-//
-//    XCTAssertTrue(valid1, @"Expected values to be valid but found error %@", error);
-//
-//    XCTAssertTrue([_sample1.creationDate isKindOfClass:[NSDate class]], @"Expected a date");
-//
-//    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:_sample1.creationDate];
-//    XCTAssertEqual(components.year, 2014, @"Expected year 2014");
-//    XCTAssertEqual(components.month, 4, @"Expected month 4");
-//    XCTAssertEqual(components.day, 1, @"Expected day 1");
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m){m.internalClass = [NSString class]; m.externalKey = @"id"; m.internalKey = @"guid"; m.requires = [EFRequires exists];}],
+                               [EFMapping mapping:^(EFMapping *m){m.internalClass = [NSDate class]; m.externalKey = @"created_at"; m.internalKey = @"creationDate"; m.formatter = dateFormatter;}]
+                               ] forClass:[EFSample class]];
+
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1", @"created_at": @"2014-04-01"} error:&error];
+    XCTAssertNotNil(sample, @"Expected values to be valid but found error %@", EFPrettyMappingError(error));
+    XCTAssertTrue([sample.creationDate isKindOfClass:[NSDate class]], @"Expected a date");
+
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:sample.creationDate];
+    XCTAssertEqual(components.year, 2014, @"Expected year 2014");
+    XCTAssertEqual(components.month, 4, @"Expected month 4");
+    XCTAssertEqual(components.day, 1, @"Expected day 1");
 }
 
 - (void)testEncoding {
-
+#warning Missing test
 }
 
 - (void)testEncodingSubclasses {
-
+#warning Missing test
 }
 
 - (void)testCreatingDictionaryRepresentation {
-//    [_sample1 setValues:_validDictionary error:NULL];
-//    NSDictionary *dictionaryRepresentation = [_sample1 dictionaryRepresentation];
-//
-//    XCTAssertNotNil(dictionaryRepresentation, @"Expected something");
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m){m.internalClass = [NSString class]; m.externalKey = @"id"; m.internalKey = @"guid"; m.requires = [EFRequires exists];}],
+                               [EFMapping mappingForArrayOfClass:[EFSample class] externalKey:@"children" internalKey:@"relatedSamples"]] forClass:[EFSample class]];
+
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1", @"children": @[@{@"id": @"2"}, @{@"id": @"3", @"children": @[@{@"id": @"4"}, @{@"id": @"5"}]}]} error:&error];
+    XCTAssertNotNil(sample, @"Map error: %@", EFPrettyMappingError(error));
+
+    id dictionaryRepresentation = [mapper dictionaryRepresentationOfObject:sample];
+    XCTAssertNotNil(dictionaryRepresentation, @"Expected something");
+    XCTAssertTrue([dictionaryRepresentation isKindOfClass:[NSDictionary class]], @"Expected dict");
+    XCTAssertEqual([dictionaryRepresentation[@"children"] count], 2, @"Expected 2 children");
+    XCTAssertEqual([dictionaryRepresentation[@"children"][1][@"children"] count], 2, @"Expected 2 grandchildren");
+    XCTAssertEqualObjects(dictionaryRepresentation[@"children"][1][@"children"][1][@"id"], @"5", @"Expected id of grandchild 2 to be 5");
 }
 
 - (void)testRequirements {

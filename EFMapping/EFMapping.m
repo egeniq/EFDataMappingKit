@@ -8,13 +8,34 @@
 
 #import "EFMapping.h"
 
+#import "EFMapping-Private.h"
+
 @implementation EFMapping
 
-+ (instancetype)mappingForType:(MappingType)type externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey internalClass:(Class)internalClass collectionClass:(Class)collectionClass formatter:(NSFormatter *)formatter transformer:(NSValueTransformer *)transformer transformationBlock:(EFMappingTransformationBlock)transformationBlock  {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:collectionClass formatter:formatter transformer:transformer transformationBlock:transformationBlock requires:nil];
++ (instancetype)mapping:(EFMappingFactoryBlock)factoryBlock {
+    __block EFMapping *mapping = [[[self class] alloc] init];
+    mapping.type = EFMappingTypeId;
+    factoryBlock(mapping);
+    return mapping;
 }
 
-+ (instancetype)mappingForType:(MappingType)type externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey internalClass:(Class)internalClass collectionClass:(Class)collectionClass formatter:(NSFormatter *)formatter transformer:(NSValueTransformer *)transformer transformationBlock:(EFMappingTransformationBlock)transformationBlock requires:(id <EFRequires>)requires {
++ (instancetype)mappingForArray:(EFMappingFactoryBlock)factoryBlock {
+    __block EFMapping *mapping = [[[self class] alloc] init];
+    mapping.type = EFMappingTypeCollection;
+    mapping.collectionClass = [NSArray class];
+    factoryBlock(mapping);
+    return mapping;
+}
+
++ (instancetype)mappingForDictionary:(EFMappingFactoryBlock)factoryBlock {
+    __block EFMapping *mapping = [[[self class] alloc] init];
+    mapping.type = EFMappingTypeCollection;
+    mapping.collectionClass = [NSDictionary class];
+    factoryBlock(mapping);
+    return mapping;
+}
+
++ (instancetype)mappingForType:(EFMappingType)type externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey internalClass:(Class)internalClass collectionClass:(Class)collectionClass formatter:(NSFormatter *)formatter transformer:(NSValueTransformer *)transformer transformationBlock:(EFMappingTransformationBlock)transformationBlock requires:(id <EFRequires>)requires {
     NSParameterAssert(externalKey);
     NSParameterAssert(internalKey);
     EFMapping *mapping = [[[self class] alloc] init];
@@ -32,133 +53,43 @@
 
 #pragma mark - Number (incl. BOOL, integer, floats etc.)
 + (instancetype)mappingForNumberWithKey:(NSString *)key {
-    return [self mappingForType:MappingTypeId externalKey:key internalKey:key internalClass:[NSNumber class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil];
+    return [self mappingForType:EFMappingTypeId externalKey:key internalKey:key internalClass:[NSNumber class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil requires:nil];
 }
 
 + (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSNumber class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSNumber class] collectionClass:Nil formatter:formatter transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSNumber class] collectionClass:Nil formatter:nil transformer:transformer transformationBlock:nil];
-}
-
-+ (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSNumber class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:transformationBlock];
+    return [self mappingForType:EFMappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSNumber class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil requires:nil];
 }
 
 #pragma mark - NSString
 + (instancetype)mappingForStringWithKey:(NSString *)key {
-    return [self mappingForType:MappingTypeId externalKey:key internalKey:key internalClass:[NSString class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil];
+    return [self mappingForType:EFMappingTypeId externalKey:key internalKey:key internalClass:[NSString class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil requires:nil];
 }
 
 + (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSString class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSString class] collectionClass:Nil formatter:formatter transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSString class] collectionClass:Nil formatter:nil transformer:transformer transformationBlock:nil];
-}
-
-+ (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSString class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:transformationBlock];
+    return [self mappingForType:EFMappingTypeId externalKey:externalKey internalKey:internalKey internalClass:[NSString class] collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil requires:nil];
 }
 
 #pragma mark - Classes
 + (instancetype)mappingForClass:(Class)internalClass key:(NSString *)key {
-    return [self mappingForType:MappingTypeId externalKey:key internalKey:key internalClass:internalClass collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil];
+    return [self mappingForType:EFMappingTypeId externalKey:key internalKey:key internalClass:internalClass collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil requires:nil];
 }
 
 + (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey requires:(id <EFRequires>)requirements {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil requires:requirements];
-}
-
-
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:formatter transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:nil transformer:transformer transformationBlock:nil];
-}
-
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock {
-    return [self mappingForType:MappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:nil transformer:nil transformationBlock:transformationBlock];
+    return [self mappingForType:EFMappingTypeId externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:Nil formatter:nil transformer:nil transformationBlock:nil requires:nil];
 }
 
 #pragma mark - NSArray of classes
 + (instancetype)mappingForArrayOfClass:(Class)internalClass key:(NSString *)key {
-    return [self mappingForType:MappingTypeCollection externalKey:key internalKey:key internalClass:internalClass collectionClass:[NSArray class] formatter:nil transformer:nil transformationBlock:nil];
+    return [self mappingForType:EFMappingTypeCollection externalKey:key internalKey:key internalClass:internalClass collectionClass:[NSArray class] formatter:nil transformer:nil transformationBlock:nil requires:nil];
 }
 
 + (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSArray class] formatter:nil transformer:nil transformationBlock:nil];
+    return [self mappingForType:EFMappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSArray class] formatter:nil transformer:nil transformationBlock:nil requires:nil];
 }
 
-+ (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSArray class] formatter:formatter transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSArray class] formatter:nil transformer:transformer transformationBlock:nil];
-}
-
-+ (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSArray class] formatter:nil transformer:nil transformationBlock:transformationBlock];
-}
-
-#pragma mark - NSDictionary of classes
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass key:(NSString *)key {
-    return [self mappingForType:MappingTypeCollection externalKey:key internalKey:key internalClass:internalClass collectionClass:[NSDictionary class] formatter:nil transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSDictionary class] formatter:nil transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSDictionary class] formatter:formatter transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSDictionary class] formatter:nil transformer:transformer transformationBlock:nil];
-}
-
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:[NSDictionary class] formatter:nil transformer:nil transformationBlock:transformationBlock];
-}
-
-#pragma mark - Generic collection of classes
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass key:(NSString *)key {
-    return [self mappingForType:MappingTypeCollection externalKey:key internalKey:key internalClass:internalClass collectionClass:collectionClass formatter:nil transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:collectionClass formatter:nil transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:collectionClass formatter:formatter transformer:nil transformationBlock:nil];
-}
-
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:collectionClass formatter:nil transformer:transformer transformationBlock:nil];
-}
-
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock {
-    return [self mappingForType:MappingTypeCollection externalKey:externalKey internalKey:internalKey internalClass:internalClass collectionClass:collectionClass formatter:nil transformer:nil transformationBlock:transformationBlock];
+- (void)setKey:(NSString *)key {
+    self.internalKey = key;
+    self.externalKey = key;
 }
 
 @end

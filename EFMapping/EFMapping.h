@@ -20,69 +20,22 @@
  */
 typedef id (^EFMappingTransformationBlock)(id, BOOL reverse);
 
+@class EFMapping;
+
+typedef void (^EFMappingFactoryBlock)(EFMapping *);
+
 /**
- *  Classes return an array of EFMapping instances to define how data from an external source, such as JSON, needs to be applied to its instances.
+ *  EFMapping instances define how data from an external source, such as JSON, needs to be applied to instances.
  */
 @interface EFMapping : NSObject
 
-#pragma mark - Number (incl. BOOL, integer, floats etc.)
-+ (instancetype)mappingForNumberWithKey:(NSString *)key;
-+ (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
-+ (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter;
-+ (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer;
-+ (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock;
++ (instancetype)mapping:(EFMappingFactoryBlock)factoryBlock;
++ (instancetype)mappingForArray:(EFMappingFactoryBlock)factoryBlock;
++ (instancetype)mappingForDictionary:(EFMappingFactoryBlock)factoryBlock;
 
-#pragma mark - NSString
-+ (instancetype)mappingForStringWithKey:(NSString *)key;
-+ (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
-+ (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter;
-+ (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer;
-+ (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock;
-
-#pragma mark - Classes
-//+ (instancetype)mappingForClass:(Class)internalClass from:(NSString *)externalKey to:(NSString *)internalKey transforms:(id <EFTransforms>)transforms requires:(id <EFRequires>)requirements;
-
-+ (instancetype)mappingForClass:(Class)internalClass key:(NSString *)key;
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey requires:(id <EFRequires>)requirements;
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter;
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer;
-+ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock;
-
-#pragma mark - NSArray of classes
-+ (instancetype)mappingForArrayOfClass:(Class)internalClass key:(NSString *)key;
-+ (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
-+ (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter;
-+ (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer;
-+ (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock;
-
-#pragma mark - NSDictionary of classes
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass key:(NSString *)key;
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter;
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer;
-+ (instancetype)mappingForDictionaryOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock;
-
-#pragma mark - Generic collection of classes
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass key:(NSString *)key;
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey formatter:(NSFormatter *)formatter;
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformer:(NSValueTransformer *)transformer;
-+ (instancetype)mappingForCollection:(Class)collectionClass ofClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey transformationBlock:(EFMappingTransformationBlock)transformationBlock;
-
-@end
-
-typedef NS_ENUM(NSUInteger, MappingType) {
-    MappingTypeId,
-    MappingTypeCollection
-};
-
-@interface EFMapping ()
-
-@property (nonatomic, assign) MappingType type;
+- (void)setKey:(NSString *)key;
 @property (nonatomic, copy) NSString *externalKey;
 @property (nonatomic, copy) NSString *internalKey;
-@property (nonatomic, assign) Class collectionClass;
 @property (nonatomic, assign) Class internalClass;
 
 @property (nonatomic, strong) NSFormatter *formatter;
@@ -90,5 +43,21 @@ typedef NS_ENUM(NSUInteger, MappingType) {
 @property (nonatomic, copy) EFMappingTransformationBlock transformationBlock;
 
 @property (nonatomic, strong) id <EFRequires> requires;
+
+#pragma mark - Number (incl. BOOL, integer, floats etc.)
++ (instancetype)mappingForNumberWithKey:(NSString *)key;
++ (instancetype)mappingForNumberWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
+
+#pragma mark - NSString
++ (instancetype)mappingForStringWithKey:(NSString *)key;
++ (instancetype)mappingForStringWithExternalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
+
+#pragma mark - Classes
++ (instancetype)mappingForClass:(Class)internalClass key:(NSString *)key;
++ (instancetype)mappingForClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
+
+#pragma mark - NSArray of classes
++ (instancetype)mappingForArrayOfClass:(Class)internalClass key:(NSString *)key;
++ (instancetype)mappingForArrayOfClass:(Class)internalClass externalKey:(NSString *)externalKey internalKey:(NSString *)internalKey;
 
 @end

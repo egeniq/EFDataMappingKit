@@ -66,6 +66,7 @@
 		C7F7DA0D1907EC2B009E9974 /* MappingKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MappingKit.h; sourceTree = "<group>"; };
 		C7F7DA101907EDB1009E9974 /* EFMappingError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFMappingError.h; sourceTree = "<group>"; };
 		C7F7DA111907EDB1009E9974 /* EFMappingError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFMappingError.m; sourceTree = "<group>"; };
+		C7F7DAAF190A1C2B009E9974 /* EFMapping-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EFMapping-Private.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +131,7 @@
 				C7F7DA041907EBF5009E9974 /* EFMapper.h */,
 				C7F7DA051907EBF5009E9974 /* EFMapper.m */,
 				C7F7DA071907EBFE009E9974 /* EFMapping.h */,
+				C7F7DAAF190A1C2B009E9974 /* EFMapping-Private.h */,
 				C7F7DA081907EBFE009E9974 /* EFMapping.m */,
 				C7F7DA101907EDB1009E9974 /* EFMappingError.h */,
 				C7F7DA111907EDB1009E9974 /* EFMappingError.m */,
