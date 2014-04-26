@@ -46,6 +46,9 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
  */
 - (void)registerMappings:(NSArray *)mappings forClass:(Class)aClass;
 
+// TODO: Docs!
+- (void)registerMapper:(EFMapper *)mapper forClass:(Class)aClass;
+
 #pragma mark - Initializers
 
 /**

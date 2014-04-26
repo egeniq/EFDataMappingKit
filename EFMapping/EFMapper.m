@@ -13,6 +13,7 @@
 
 @interface EFMapper ()
 
+@property (nonatomic, strong) NSMutableDictionary *mappers;
 @property (nonatomic, strong) NSMutableDictionary *mappings;
 @property (nonatomic, strong) NSMutableDictionary *initializers;
 @property (nonatomic, strong) NSMutableDictionary *dictionaryKeys;
@@ -35,11 +36,34 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        _mappers = [NSMutableDictionary dictionary];
         _mappings = [NSMutableDictionary dictionary];
         _initializers = [NSMutableDictionary dictionary];
         _dictionaryKeys = [NSMutableDictionary dictionary];
     }
     return self;
+}
+
+- (void)registerMapper:(EFMapper *)mapper forClass:(Class)aClass {
+    if (mapper) {
+        self.mappers[NSStringFromClass(aClass)] = mapper;
+    } else {
+        [self.mappers removeObjectForKey:NSStringFromClass(aClass)];
+    }
+}
+
+- (EFMapper *)mapperForClass:(Class)aClass {
+    EFMapper *mapper = self.mappers[NSStringFromClass(aClass)];
+    if (mapper) {
+        return mapper;
+    } else {
+        Class superClass = [aClass superclass];
+        if (superClass != Nil) {
+            return [self mapperForClass:superClass];
+        } else {
+            return self;
+        }
+    }
 }
 
 - (void)registerMappings:(NSArray *)mappings forClass:(Class)aClass {
@@ -95,100 +119,146 @@
 }
 
 - (BOOL)validateValues:(NSDictionary *)values forClass:(Class)aClass onObject:(id)object error:(NSError **)error {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:aClass];
+    if (mapper != self) {
+        return [mapper validateValues:values forClass:aClass onObject:object error:error];
+    }
+
     NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
     NSArray *mappings = [self mappingsForClass:aClass];
     for (EFMapping *mapping in mappings) {
-        id incomingObject = values[mapping.externalKey];
-        //        if (!incomingObject) {
-        //            // not in dictionary, leave as is
-        //            continue;
-        //        }
-
-        if ([incomingObject isKindOfClass:[NSNull class]]) {
-            incomingObject = nil;
-        }
-
-        BOOL allowed = YES;
-        if (mapping.requires) {
-            allowed = [mapping.requires evaluateForValue:incomingObject];
-        }
-        if (!allowed) {
-            NSString *description = [NSString stringWithFormat:@"Did not pass requirements for value (%@) of class %@ for key %@", incomingObject, NSStringFromClass([incomingObject class]), mapping.internalKey];
-            NSError *validationError = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingRequirementsFailed userInfo:@{NSLocalizedDescriptionKey: description}];
-            errors[mapping.internalKey] = validationError;
-            continue;
-        }
+        id value = values[mapping.externalKey];
 
         switch (mapping.type) {
             case EFMappingTypeId: {
-                if (incomingObject) {
-                    NSError *validationError = nil;
-                    incomingObject = [self validateObject:incomingObject mapping:mapping error:&validationError];
-                    if (!incomingObject) {
+                NSError *transformError = nil;
+                id transformedValue = [self transformValue:value mapping:mapping reverse:NO error:&transformError];
+                if (value && !transformedValue) {
+                    errors[mapping.internalKey] = transformError;
+                }
+
+                NSError *validationError = nil;
+                BOOL valid = [self validateValue:transformedValue isCollection:NO mapping:mapping error:&validationError];
+                if (!valid) {
+                    errors[mapping.internalKey] = validationError;
+                }
+
+                if (object) {
+                    // NSKeyValueCoding validation
+                    NSError *validationError;
+                    BOOL valid = [object validateValue:&value forKey:mapping.internalKey error:&validationError];
+                    if (!valid) {
                         errors[mapping.internalKey] = validationError;
                     }
                 }
             }
                 break;
             case EFMappingTypeCollection:
-                if ([mapping.collectionClass isSubclassOfClass:[NSArray class]] && [incomingObject isKindOfClass:[NSArray class]]) {
-                    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[incomingObject count]];
+                if ([mapping.collectionClass isSubclassOfClass:[NSArray class]] && [value isKindOfClass:[NSArray class]]) {
+                    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[value count]];
                     NSMutableArray *errorsInArray = [NSMutableArray array];
-                    for (__strong id child in incomingObject) {
+                    for (__strong id child in value) {
+                        NSError *transformError = nil;
+                        id transformedValue = [self transformValue:child mapping:mapping reverse:NO error:&transformError];
+                        if (child && !transformedValue) {
+                            [errorsInArray addObject:transformError];
+                        }
+
                         NSError *validationError = nil;
-                        child = [self validateObject:child mapping:mapping error:&validationError];
-                        if (!child) {
+                        BOOL valid = [self validateValue:transformedValue isCollection:NO mapping:mapping error:&validationError];
+                        if (!valid) {
                             [errorsInArray addObject:validationError];
                         } else {
-                            [array addObject:child];
+                            [array addObject:transformedValue];
                         }
                     }
+
                     if ([errorsInArray count] > 0) {
                         NSString *description = [NSString stringWithFormat:@"Encountered %lu validation error(s) in array for key %@", (unsigned long)[errorsInArray count], mapping.internalKey];
                         NSError *validationError = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description, EFMappingErrorValidationErrorsKey: errorsInArray}];
                         errors[mapping.internalKey] = validationError;
-                    }
-                    incomingObject = [[mapping.collectionClass alloc] initWithArray:array];
-                } else if ([mapping.collectionClass isSubclassOfClass:[NSDictionary class]] && [incomingObject isKindOfClass:[NSDictionary class]]) {
-                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[incomingObject count]];
-                    NSMutableDictionary *errorsInDictionary = [NSMutableDictionary dictionary];
-                    [incomingObject enumerateKeysAndObjectsUsingBlock:^(id key, id child, BOOL *stop) {
+                    } else {
+                        // Don't apply transform, that is for the internal classes!
+
                         NSError *validationError = nil;
-                        child = [self validateObject:object mapping:mapping error:&validationError];
-                        if (!child) {
+                        BOOL valid = [self validateValue:value isCollection:YES mapping:mapping error:&validationError];
+                        if (!valid) {
+                            errors[mapping.internalKey] = validationError;
+                        }
+
+                        if (object) {
+                            // NSKeyValueCoding validation
+                            NSError *validationError;
+                            BOOL valid = [object validateValue:&value forKey:mapping.internalKey error:&validationError];
+                            if (!valid) {
+                                errors[mapping.internalKey] = validationError;
+                            }
+                        }
+                    }
+                } else if ([mapping.collectionClass isSubclassOfClass:[NSDictionary class]] && [value isKindOfClass:[NSDictionary class]]) {
+                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[value count]];
+                    NSMutableDictionary *errorsInDictionary = [NSMutableDictionary dictionary];
+                    [value enumerateKeysAndObjectsUsingBlock:^(id key, id child, BOOL *stop) {
+                        NSError *transformError = nil;
+                        id transformedValue = [self transformValue:child mapping:mapping reverse:NO error:&transformError];
+                        if (child && !transformedValue) {
+                            errorsInDictionary[key] = transformError;
+                        }
+
+                        NSError *validationError = nil;
+                        BOOL valid = [self validateValue:transformedValue isCollection:NO mapping:mapping error:&validationError];
+                        if (!valid) {
                             errorsInDictionary[key] = validationError;
                         } else {
                             dictionary[key] = child;
                         }
                     }];
+
                     if ([errorsInDictionary count] > 0) {
                         NSString *description = [NSString stringWithFormat:@"Encountered %lu validation error(s) in dictionary for key %@", (unsigned long)[errorsInDictionary count], mapping.internalKey];
                         NSError *validationError = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description, EFMappingErrorValidationErrorsKey: errorsInDictionary}];
                         errors[mapping.internalKey] = validationError;
-                    }
-                    incomingObject = [[mapping.collectionClass alloc] initWithDictionary:dictionary];
-                } else {
-                    if (allowed && !incomingObject) {
-                        // TODO: This is weird
                     } else {
-                        NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but %@ instance", incomingObject, NSStringFromClass([incomingObject class]), mapping.internalKey, NSStringFromClass(mapping.collectionClass)];
-                        NSError *validationError = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description}];
+                        // Don't apply transform, that is for the internal classes!
+
+                        NSError *validationError = nil;
+                        BOOL valid = [self validateValue:value isCollection:YES mapping:mapping error:&validationError];
+                        if (!valid) {
+                            errors[mapping.internalKey] = validationError;
+                        }
+
+                        if (object) {
+                            // NSKeyValueCoding validation
+                            NSError *validationError;
+                            BOOL valid = [object validateValue:&value forKey:mapping.internalKey error:&validationError];
+                            if (!valid) {
+                                errors[mapping.internalKey] = validationError;
+                            }
+                        }
+                    }
+                } else {
+                    // Don't apply transform, that is for the internal classes!
+
+                    NSError *validationError = nil;
+                    BOOL valid = [self validateValue:value isCollection:YES mapping:mapping error:&validationError];
+                    if (!valid) {
                         errors[mapping.internalKey] = validationError;
+                    }
+
+                    if (object) {
+                        // NSKeyValueCoding validation
+                        NSError *validationError;
+                        BOOL valid = [object validateValue:&value forKey:mapping.internalKey error:&validationError];
+                        if (!valid) {
+                            errors[mapping.internalKey] = validationError;
+                        }
                     }
                 }
                 break;
             default:
                 break;
-        }
-
-        // NSKeyValueCoding validation
-        if (object) {
-            NSError *validationError;
-            BOOL valid = [object validateValue:&incomingObject forKey:mapping.internalKey error:&validationError];
-            if (!valid) {
-                errors[mapping.internalKey] = validationError;
-            }
         }
     }
 
@@ -204,6 +274,12 @@
 }
 
 - (BOOL)setValues:(NSDictionary *)values onObject:(id)object error:(NSError **)error {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper setValues:values onObject:object error:error];
+    }
+
     BOOL valid = [self validateValues:values onObject:object error:error];
     if (!valid) {
         return NO;
@@ -211,57 +287,41 @@
 
     NSArray *mappings = [self mappingsForClass:[object class]];
     for (EFMapping *mapping in mappings) {
-        id incomingObject = values[mapping.externalKey];
-        if (!incomingObject) {
-            // not in dictionary, leave as is
-            continue;
-        }
-
-        if ([incomingObject isKindOfClass:[NSNull class]]) {
-            // null, remove
-            [self setValue:nil forKey:mapping.internalKey];
-            continue;
-        }
+        id value = values[mapping.externalKey];
 
         switch (mapping.type) {
-            case EFMappingTypeId:
-                incomingObject = [self transformObject:incomingObject mapping:mapping reverse:NO error:NULL];
-                if (![incomingObject isKindOfClass:mapping.internalClass]) {
-                    // if dictionary convert
-                    if ([incomingObject isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
-                        if (![incomingObject isKindOfClass:mapping.internalClass] && [incomingObject isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
-                            incomingObject = [self objectOfClass:mapping.internalClass withValues:incomingObject error:error];
-                        }
-                        // TODO: Check for nil!
-                    } else {
-                        // TODO: Use default?
-                        continue;
-                    }
-                }
+            case EFMappingTypeId: {
+                id transformedValue = [self transformValue:value mapping:mapping reverse:NO error:NULL];
+                [self setValue:transformedValue onObject:object isCollection:NO mapping:mapping];
+            }
                 break;
             case EFMappingTypeCollection:
                 if ([mapping.collectionClass isSubclassOfClass:[NSArray class]]) {
-                    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[incomingObject count]];
-                    for (__strong id child in incomingObject) {
-                        child = [self transformObject:child mapping:mapping reverse:NO error:NULL];
-                        if (![child isKindOfClass:mapping.internalClass] && [child isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
-                            child = [self objectOfClass:mapping.internalClass withValues:child error:error];
+                    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[value count]];
+                    for (id child in value) {
+                        id transformedChild = [self transformValue:child mapping:mapping reverse:NO error:NULL];
+                        if (![transformedChild isKindOfClass:mapping.internalClass] && [transformedChild isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
+                            transformedChild = [self objectOfClass:mapping.internalClass withValues:transformedChild error:error];
                         }
-                        // TODO: Check for nil!
-                        [array addObject:child];
+                        if (transformedChild) {
+                            [array addObject:transformedChild];
+                        }
                     }
-                    incomingObject = [[mapping.collectionClass alloc] initWithArray:array];
+                    id collectionValue = [[mapping.collectionClass alloc] initWithArray:array];
+                    [self setValue:collectionValue onObject:object isCollection:YES mapping:mapping];
                 } else if ([mapping.collectionClass isSubclassOfClass:[NSDictionary class]]) {
-                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[incomingObject count]];
-                    [incomingObject enumerateKeysAndObjectsUsingBlock:^(id key, id child, BOOL *stop) {
-                        child = [self transformObject:child mapping:mapping reverse:NO error:NULL];
-                        if (![child isKindOfClass:mapping.internalClass] && [child isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
-                            child = [self objectOfClass:mapping.internalClass withValues:child error:error];
+                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[value count]];
+                    [value enumerateKeysAndObjectsUsingBlock:^(id key, id child, BOOL *stop) {
+                        id transformedChild = [self transformValue:child mapping:mapping reverse:NO error:NULL];
+                        if (![transformedChild isKindOfClass:mapping.internalClass] && [transformedChild isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
+                            transformedChild = [self objectOfClass:mapping.internalClass withValues:transformedChild error:error];
                         }
-                        // TODO: Check for nil!
-                        dictionary[key] = child;
+                        if (transformedChild) {
+                            dictionary[key] = transformedChild;
+                        }
                     }];
-                    incomingObject = [[mapping.collectionClass alloc] initWithDictionary:dictionary];
+                    id collectionValue = [[mapping.collectionClass alloc] initWithDictionary:dictionary];
+                    [self setValue:collectionValue onObject:object isCollection:YES mapping:mapping];
                 } else {
                     continue;
                 }
@@ -269,15 +329,16 @@
             default:
                 break;
         }
-
-        // NSKeyValueCoding validation: gives classes a chance to implement validation too
-        [object validateValue:&incomingObject forKey:mapping.internalKey error:NULL];
-        [object setValue:incomingObject forKey:mapping.internalKey];
     }
     return YES;
 }
 
 - (id)objectOfClass:(Class)aClass withValues:(NSDictionary *)values error:(NSError **)error {
+    EFMapper *mapper = [self mapperForClass:aClass];
+    if (mapper != self) {
+        return [mapper objectOfClass:aClass withValues:values error:error];
+    }
+
     EFMappingInitializerBlock initializer = [self initializerForClass:aClass];
     id object = nil;
     if (initializer) {
@@ -288,7 +349,7 @@
 
     if (!object) {
         // For some reason the initialisation failed
-        if (*error != NULL) {
+        if (error != NULL) {
             *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingInitialisationFailed userInfo:nil];
         }
         return nil;
@@ -299,62 +360,115 @@
 }
 
 #pragma mark - Helper methods
-- (id)transformObject:(id)incomingObject mapping:(EFMapping *)mapping reverse:(BOOL)reverse error:(NSError **)error {
-    if (mapping.formatter && !reverse && [incomingObject isKindOfClass:[NSString class]]) {
-        id formattedObject;
+- (id)transformValue:(id)value mapping:(EFMapping *)mapping reverse:(BOOL)reverse error:(NSError **)error {
+    if (mapping.formatter && !reverse && [value isKindOfClass:[NSString class]]) {
+        id formattedValue;
         NSString *errorDescription = nil;
-        if ([mapping.formatter getObjectValue:&formattedObject forString:incomingObject errorDescription:&errorDescription]) {
-            incomingObject = formattedObject;
+        if ([mapping.formatter getObjectValue:&formattedValue forString:value errorDescription:&errorDescription]) {
+            value = formattedValue;
         } else {
             *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingTransformationError userInfo:@{NSLocalizedDescriptionKey: errorDescription}];
-            incomingObject = nil;
+            value = nil;
         }
-    } else if (mapping.formatter && reverse && [incomingObject isKindOfClass:mapping.internalClass]) {
+    } else if (mapping.formatter && reverse && [value isKindOfClass:mapping.internalClass]) {
         NSString *formattedString;
-        formattedString = [mapping.formatter stringForObjectValue:incomingObject];
-        incomingObject = formattedString;
+        formattedString = [mapping.formatter stringForObjectValue:value];
+        value = formattedString;
     }
     if (mapping.transformer) {
-        incomingObject = [mapping.transformer transformedValue:incomingObject];
+        value = [mapping.transformer transformedValue:value];
     }
     if (mapping.transformationBlock) {
-        incomingObject = mapping.transformationBlock(incomingObject, reverse);
-        if ([incomingObject isKindOfClass:[NSError class]]) {
-            *error = (NSError *)incomingObject;
-            incomingObject = nil;
+        value = mapping.transformationBlock(value, reverse);
+        if ([value isKindOfClass:[NSError class]]) {
+            *error = (NSError *)value;
+            value = nil;
         }
     }
-    return incomingObject;
+    return value;
 }
 
-- (id)validateObject:(id)incomingObject mapping:(EFMapping *)mapping error:(NSError **)error {
-    NSError *validationError = nil;
-    incomingObject = [self transformObject:incomingObject mapping:mapping reverse:NO error:&validationError];
-    if (!incomingObject) {
-        *error = validationError;
-        return nil;
+- (BOOL)validateValue:(id)value isCollection:(BOOL)isCollection mapping:(EFMapping *)mapping error:(NSError **)error {
+    if ([value isKindOfClass:[NSNull class]]) {
+        value = nil;
     }
-    if (![incomingObject isKindOfClass:mapping.internalClass]) {
-        // if dictionary try to convert
-        if ([incomingObject isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
-            NSError *validationError;
-            BOOL valid = [self validateValues:incomingObject forClass:mapping.internalClass error:&validationError];
-            if (!valid) {
-                *error = validationError;
-                return nil;
+
+    BOOL allowed = YES;
+    if (mapping.requires) {
+        allowed = [mapping.requires evaluateForValue:value];
+    }
+    if (!allowed) {
+        if (error != NULL) {
+            NSString *description = [NSString stringWithFormat:@"Did not pass requirements for value (%@) of class %@ for key %@", value, NSStringFromClass([value class]), mapping.internalKey];
+            *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingRequirementsFailed userInfo:@{NSLocalizedDescriptionKey: description}];
+        };
+        return NO;
+    }
+
+    if (isCollection) {
+        if (value && ![value isKindOfClass:mapping.collectionClass]) {
+            if (error != NULL) {
+                NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but %@ instance", value, NSStringFromClass([value class]), mapping.internalKey, NSStringFromClass(mapping.collectionClass)];
+                *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description}];
             }
-        } else {
-            NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but %@ instance%@", incomingObject, NSStringFromClass([incomingObject class]), mapping.internalKey, NSStringFromClass(mapping.internalClass), [self mappingsForClass:mapping.internalClass] ? @" or NSDictionary" : @""];
-            NSError *validationError = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description}];
-            *error = validationError;
-            return nil;
+            return NO;
+        }
+    } else {
+        if (value && ![value isKindOfClass:mapping.internalClass]) {
+            // if dictionary try to convert
+            if ([value isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
+                BOOL valid = [self validateValues:value forClass:mapping.internalClass error:error];
+                if (!valid) {
+                    return NO;
+                }
+            } else {
+                if (error != NULL) {
+                    NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but %@ instance%@", value, NSStringFromClass([value class]), mapping.internalKey, NSStringFromClass(mapping.internalClass), [self mappingsForClass:mapping.internalClass] ? @" or NSDictionary" : @""];
+                    *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description}];
+                }
+                return NO;
+            }
         }
     }
-    return incomingObject;
+    return YES;
+}
+
+- (void)setValue:(id)value onObject:(id)object isCollection:(BOOL)isCollection mapping:(EFMapping *)mapping {
+    if (!value) {
+        // not in dictionary, leave as is
+        return;
+    }
+
+    if ([value isKindOfClass:[NSNull class]]) {
+        // null, remove
+        value = nil;
+    }
+
+    if (![value isKindOfClass:mapping.internalClass] && !isCollection) {
+        // if dictionary convert
+        if ([value isKindOfClass:[NSDictionary class]] && [self mappingsForClass:mapping.internalClass]) {
+            value = [self objectOfClass:mapping.internalClass withValues:value error:NULL];
+        }
+    }
+
+    if (!value) {
+        // TODO: Use default?
+    }
+
+    // NSKeyValueCoding validation: gives classes a chance to implement validation too
+    [object validateValue:&value forKey:mapping.internalKey error:NULL];
+
+    [object setValue:value forKey:mapping.internalKey];
 }
 
 #pragma mark - NSCoding support
 - (void)encodeObject:(id)object withCoder:(NSCoder *)aCoder {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper encodeObject:object withCoder:aCoder];
+    }
+
     NSArray *mappings = [self mappingsForClass:[object class]];
     for (EFMapping *mapping in mappings) {
         [aCoder encodeObject:[object valueForKey:mapping.internalKey] forKey:mapping.internalKey];
@@ -362,6 +476,12 @@
 }
 
 - (void)decodeObject:(id)object withCoder:(NSCoder *)aDecoder {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper decodeObject:object withCoder:aDecoder];
+    }
+
     NSArray *mappings = [self mappingsForClass:[object class]];
     for (EFMapping *mapping in mappings) {
         switch (mapping.type) {
@@ -406,6 +526,12 @@
 }
 
 - (id)dictionaryRepresentationOfObject:(id)object forKeys:(NSArray *)keys {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper dictionaryRepresentationOfObject:object forKeys:keys];
+    }
+
     if ([object isKindOfClass:[NSArray class]]) {
         // If the object is an array
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:[object count]];
@@ -446,7 +572,7 @@
                         NSMutableArray *dictionaryRepresentation = [NSMutableArray arrayWithCapacity:[value count]];
                         for (__strong id child in value) {
                             NSError *error = nil;
-                            child = [self transformObject:child mapping:mapping reverse:YES error:&error];
+                            child = [self transformValue:child mapping:mapping reverse:YES error:&error];
                             if (child) {
                                 [dictionaryRepresentation addObject:[self dictionaryRepresentationOfObject:child]];
                             } else {
@@ -459,7 +585,7 @@
                         NSMutableDictionary *dictionaryRepresentation = [NSMutableDictionary dictionaryWithCapacity:[value count]];
                         [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id child, BOOL *stop) {
                             NSError *error = nil;
-                            child = [self transformObject:child mapping:mapping reverse:YES error:&error];
+                            child = [self transformValue:child mapping:mapping reverse:YES error:&error];
                             if (child) {
                                 dictionaryRepresentation[key] = [self dictionaryRepresentationOfObject:child];
                             } else {
@@ -474,7 +600,7 @@
                     id child = [object valueForKey:mapping.internalKey];
                     if (child) {
                         NSError *error = nil;
-                        child = [self transformObject:child mapping:mapping reverse:YES error:&error];
+                        child = [self transformValue:child mapping:mapping reverse:YES error:&error];
                         if (object) {
                             dictionary[mapping.externalKey] = [self dictionaryRepresentationOfObject:child];
                         } else {
@@ -493,6 +619,12 @@
 }
 
 - (id)dictionaryRepresentationOfObject:(id)object {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper dictionaryRepresentationOfObject:object];
+    }
+
     return [self dictionaryRepresentationOfObject:object forKeys:[self dictionaryRepresentationKeysForClass:[object class]]];
 }
 

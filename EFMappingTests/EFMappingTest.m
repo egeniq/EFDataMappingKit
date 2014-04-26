@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "MappingKit.h"
+#import "EFDataMappingKit.h"
 
 @interface EFSample : NSObject
 
