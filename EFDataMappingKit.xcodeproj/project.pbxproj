@@ -438,7 +438,7 @@
 		C70D5E2E18DE0AE900E7B749 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/EFMapping.app/EFMapping";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/EFDataMappingKit.app/EFDataMappingKit";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -460,7 +460,7 @@
 		C70D5E2F18DE0AE900E7B749 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/EFMapping.app/EFMapping";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/EFDataMappingKit.app/EFDataMappingKit";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
