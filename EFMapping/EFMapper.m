@@ -13,6 +13,7 @@
 
 @interface EFMapper ()
 
+@property (nonatomic, strong) NSMutableDictionary *mappers;
 @property (nonatomic, strong) NSMutableDictionary *mappings;
 @property (nonatomic, strong) NSMutableDictionary *initializers;
 @property (nonatomic, strong) NSMutableDictionary *dictionaryKeys;
@@ -35,11 +36,34 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        _mappers = [NSMutableDictionary dictionary];
         _mappings = [NSMutableDictionary dictionary];
         _initializers = [NSMutableDictionary dictionary];
         _dictionaryKeys = [NSMutableDictionary dictionary];
     }
     return self;
+}
+
+- (void)registerMapper:(EFMapper *)mapper forClass:(Class)aClass {
+    if (mapper) {
+        self.mappers[NSStringFromClass(aClass)] = mapper;
+    } else {
+        [self.mappers removeObjectForKey:NSStringFromClass(aClass)];
+    }
+}
+
+- (EFMapper *)mapperForClass:(Class)aClass {
+    EFMapper *mapper = self.mappers[NSStringFromClass(aClass)];
+    if (mapper) {
+        return mapper;
+    } else {
+        Class superClass = [aClass superclass];
+        if (superClass != Nil) {
+            return [self mapperForClass:superClass];
+        } else {
+            return self;
+        }
+    }
 }
 
 - (void)registerMappings:(NSArray *)mappings forClass:(Class)aClass {
@@ -95,6 +119,12 @@
 }
 
 - (BOOL)validateValues:(NSDictionary *)values forClass:(Class)aClass onObject:(id)object error:(NSError **)error {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:aClass];
+    if (mapper != self) {
+        return [mapper validateValues:values forClass:aClass onObject:object error:error];
+    }
+
     NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
     NSArray *mappings = [self mappingsForClass:aClass];
@@ -244,6 +274,12 @@
 }
 
 - (BOOL)setValues:(NSDictionary *)values onObject:(id)object error:(NSError **)error {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper setValues:values onObject:object error:error];
+    }
+
     BOOL valid = [self validateValues:values onObject:object error:error];
     if (!valid) {
         return NO;
@@ -298,6 +334,11 @@
 }
 
 - (id)objectOfClass:(Class)aClass withValues:(NSDictionary *)values error:(NSError **)error {
+    EFMapper *mapper = [self mapperForClass:aClass];
+    if (mapper != self) {
+        return [mapper objectOfClass:aClass withValues:values error:error];
+    }
+
     EFMappingInitializerBlock initializer = [self initializerForClass:aClass];
     id object = nil;
     if (initializer) {
@@ -422,6 +463,12 @@
 
 #pragma mark - NSCoding support
 - (void)encodeObject:(id)object withCoder:(NSCoder *)aCoder {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper encodeObject:object withCoder:aCoder];
+    }
+
     NSArray *mappings = [self mappingsForClass:[object class]];
     for (EFMapping *mapping in mappings) {
         [aCoder encodeObject:[object valueForKey:mapping.internalKey] forKey:mapping.internalKey];
@@ -429,6 +476,12 @@
 }
 
 - (void)decodeObject:(id)object withCoder:(NSCoder *)aDecoder {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper decodeObject:object withCoder:aDecoder];
+    }
+
     NSArray *mappings = [self mappingsForClass:[object class]];
     for (EFMapping *mapping in mappings) {
         switch (mapping.type) {
@@ -473,6 +526,12 @@
 }
 
 - (id)dictionaryRepresentationOfObject:(id)object forKeys:(NSArray *)keys {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper dictionaryRepresentationOfObject:object forKeys:keys];
+    }
+
     if ([object isKindOfClass:[NSArray class]]) {
         // If the object is an array
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:[object count]];
@@ -560,6 +619,12 @@
 }
 
 - (id)dictionaryRepresentationOfObject:(id)object {
+    // Forward to registered mapper
+    EFMapper *mapper = [self mapperForClass:[object class]];
+    if (mapper != self) {
+        return [mapper dictionaryRepresentationOfObject:object];
+    }
+
     return [self dictionaryRepresentationOfObject:object forKeys:[self dictionaryRepresentationKeysForClass:[object class]]];
 }
 
