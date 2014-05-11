@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>EFDataMappingKit by johankool</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>EFDataMappingKit</h1>
+        <h2></h2>
+        <a href="https://github.com/johankool/EFDataMappingKit" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="efdatamappingkit" class="anchor" href="#efdatamappingkit"><span class="octicon octicon-link"></span></a>EFDataMappingKit</h1>
+
+<p>Mapping data from an API to a database. Serializing objects to persistent storage. In most data heavy applications we are constantly converting from one type of data to another. </p>
+
+<p>REST apis are beautiful and easily parsed, but even with pure REST apis there is hardly ever a clean 1 on 1 mapping between what you get from the server and what you process inside the app.</p>
+
+<p>We've been using some simple mapping mechanisms that allow us to easily and declaratively map data from one format to another. </p>
+
+<p>We'll have to add some getting started documentation and it's far from ready, but we thought we'd share it anyway because it may benefit others.</p>
+
+<h1>
+<a name="adding-efdatamappingkit-to-your-project" class="anchor" href="#adding-efdatamappingkit-to-your-project"><span class="octicon octicon-link"></span></a>Adding EFDataMappingKit to your project</h1>
+
+<p>EFDataMappingKit has a Podspec available, so if you use CocoaPods add</p>
+
+<p>pod 'EFDataMappingKit'</p>
+
+<p>to your Podfile.</p>
+
+<h1>
+<a name="using-efdatamappingkit" class="anchor" href="#using-efdatamappingkit"><span class="octicon octicon-link"></span></a>Using EFDataMappingKit</h1>
+
+<h2>
+<a name="step-1-creating-an-efmapper" class="anchor" href="#step-1-creating-an-efmapper"><span class="octicon octicon-link"></span></a>Step 1. Creating an EFMapper</h2>
+
+<p>You can use the shared instance, but you don't have too.</p>
+
+<h2>
+<a name="step-2-register-mappings" class="anchor" href="#step-2-register-mappings"><span class="octicon octicon-link"></span></a>Step 2. Register mappings</h2>
+
+<p>You register an array of EFMapping objects for each entity class.</p>
+
+<p>An mapping describes how a value retrieved from an external source should be mapped on an internal entity.</p>
+
+<p>For each mapping you need to specify at least the externalKey and internalKey (or use key to set both the same) and you need to specify what kind of value you expect. For primitives such as BOOL, int, CGFloat use NSNumber.</p>
+
+<p>Use formatter, transformer and transformBlock if you need make some changes to a value. This works great with NSDateFormatter for dates. </p>
+
+<p>You can further declare your requirements for the value by setting one or more EFRequires on the requires property.</p>
+
+<h2>
+<a name="step-3-register-initializers" class="anchor" href="#step-3-register-initializers"><span class="octicon octicon-link"></span></a>Step 3. Register initializers</h2>
+
+<p>This step is optional. If no initializer is specified an object is created by calling alloc and init on it.</p>
+
+<h2>
+<a name="step-4-applying-values" class="anchor" href="#step-4-applying-values"><span class="octicon octicon-link"></span></a>Step 4. Applying values</h2>
+
+<p>You apply your values either to an already existing instance, or you can ask for a new object to be initialized. Before applying the values, the mapper will validate the values and let you know about any issues.</p>
+
+<h1>
+<a name="advanced-mappings" class="anchor" href="#advanced-mappings"><span class="octicon octicon-link"></span></a>Advanced mappings</h1>
+
+<h2>
+<a name="transforming-values" class="anchor" href="#transforming-values"><span class="octicon octicon-link"></span></a>Transforming values</h2>
+
+<h2>
+<a name="value-requirements" class="anchor" href="#value-requirements"><span class="octicon octicon-link"></span></a>Value requirements</h2>
+
+<p>On the requires property of a mapping you can either set one EFRequires instances, or an array of EFRequires instances. All EFRequires should pass for a value to be considered. You can create more complex requirements using [EFRequires either:or:] and [EFRequires not:].</p>
+
+<h2>
+<a name="collections" class="anchor" href="#collections"><span class="octicon octicon-link"></span></a>Collections</h2>
+
+<p>An array or dictionary with values.</p>
+
+<h1>
+<a name="other" class="anchor" href="#other"><span class="octicon octicon-link"></span></a>Other</h1>
+
+<p>EFDataMappingKit can do a few more things to make use of the mappings.</p>
+
+<h2>
+<a name="nscoding-support" class="anchor" href="#nscoding-support"><span class="octicon octicon-link"></span></a>NSCoding support</h2>
+
+<p>Implement the NSCoding protocol.</p>
+
+<h2>
+<a name="dictionary-representation" class="anchor" href="#dictionary-representation"><span class="octicon octicon-link"></span></a>Dictionary representation</h2>
+
+<p>You can turn your entity back into a dictionary/JSON representation.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/johankool/EFDataMappingKit/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/johankool/EFDataMappingKit/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/johankool/EFDataMappingKit"></a> is maintained by <a href="https://github.com/johankool">johankool</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
