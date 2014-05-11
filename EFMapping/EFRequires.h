@@ -12,8 +12,18 @@
 
 @end
 
+/**
+ *  Block determing wether a value conforms to requirements
+ *
+ *  @param value The value to evaluate
+ *
+ *  @return YES is requirement is met, NO otherwise
+ */
 typedef BOOL (^EFMappingEvaluationBlock)(id value);
 
+/**
+ *  Expresses requirements that a value should confirm too.
+ */
 @interface EFRequires : NSObject <EFRequires>
 
 + (instancetype)exists;

@@ -19,37 +19,47 @@
 typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
 
 /**
- *  EFMapper maps data such as those coming from JSON onto an instance using mappings. The mappings are also used to simplify implementing the NSCoding protocol for a class, and to create a dictionary representation of an instance.
+ *  `EFMapper` maps data such as those coming from JSON onto an instance using mappings. The mappings are also used to simplify implementing the `NSCoding` protocol for a class, and to create a dictionary representation of an instance.
  */
 @interface EFMapper : NSObject
 
 #pragma mark - Singleton
+/** @name Singleton */
 
 /**
  *  Convenience singleton
  *
- *  You don't have to use EFMapper as a singleton, but it can often be convenient.
+ *  You don't have to use `EFMapper` as a singleton, but it can often be convenient.
  *
  *  @return A EFMapper instance
  */
 + (instancetype)sharedInstance;
 
 #pragma mark - Mappings
+/** @name Mappings */
 
 /**
  *  Mappings to be used for setting values on instances of a class
  *
  *  Mappings are also used for subclasses of the class, unless more specific mappings for that subclass are registered.
  *
- *  @param mappings Array of EFMapping instances
+ *  @param mappings Array of `EFMapping` instances
  *  @param aClass   Class for which the mappings should be used
  */
 - (void)registerMappings:(NSArray *)mappings forClass:(Class)aClass;
 
-// TODO: Docs!
+/**
+ *  Mapper to be used for setting values on instances of a class
+ *
+ *  You can register another `EFMapper` instance, e.g. a specialized subclass, to handle mappings of specific classes. The mapper is also used for subclasses of the class, unless more specific mapper for that subclass is registered.
+ *
+ *  @param mapper `EFMapper` instance
+ *  @param aClass Class for which the mapper should be used
+ */
 - (void)registerMapper:(EFMapper *)mapper forClass:(Class)aClass;
 
 #pragma mark - Initializers
+/** @name Initializers */
 
 /**
  *  Register initializer to be called when the mapper needs to instantiate a class
@@ -62,6 +72,7 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
 - (void)registerInitializer:(EFMappingInitializerBlock)initializerBlock forClass:(Class)aClass;
 
 #pragma mark - Validating and applying values
+/** @name Validating and applying values */
 
 /**
  *  Validate values to be applied to an instance of a class
@@ -79,10 +90,10 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
 /**
  *  Validate values to be applied to an instance
  *
- *  Verifies wether the values in a dictionary can be successfully applied on the instance of a class using its mappings. This basically means that values get checked on wether they are of the right type. In this method instances also get a chance to validate a value using the standard KVO validation. To use this implement -[validate<Key>:error:] method in your class.
+ *  Verifies wether the values in a dictionary can be successfully applied on the instance of a class using its mappings. This basically means that values get checked on wether they are of the right type. In this method instances also get a chance to validate a value using the standard KVO validation. To use this implement `-[validate<Key>:error:]` method in your class.
  *
  *  @param values   The values to be validated
- *  @param onObject The object
+ *  @param object   The object
  *  @param error    Error when invalid values are encountered
  *
  *  @return YES if all values are valid, NO otherwise
@@ -114,33 +125,35 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
 - (id)objectOfClass:(Class)aClass withValues:(NSDictionary *)values error:(NSError **)error;
 
 #pragma mark - NSCoding support
+/** @name NSCoding support */
 
 /**
  *  Encodes an instance using mappings
  *
  *  @param object The object
- *  @param aCoder The NSCoder object from the -[encodeWithCoder:] method
+ *  @param aCoder The `NSCoder` object from the `-[encodeWithCoder:]` method
  */
 - (void)encodeObject:(id)object withCoder:(NSCoder *)aCoder;
 
 /**
  *  Decodes an instance using mappings
  *
- *  The coding confirms to NSSecureCoding, so you may wish to return YES from -[ requiresSecureCoding] in your subclass.
+ *  The coding confirms to `NSSecureCoding`, so you may wish to return `YES` from `-[ requiresSecureCoding]` in your subclass.
  *
  *  @param object   The object
- *  @param aDecoder The NSCoder object from the -[initWithCoder:] method
+ *  @param aDecoder The `NSCoder` object from the `-[initWithCoder:]` method
  */
 - (void)decodeObject:(id)object withCoder:(NSCoder *)aDecoder;
 
 #pragma mark - Dictionary representation
+/** @name Dictionary representation */
 
 /**
  *  Registers the keys that should be included in a dictionary representation
  *
  *  By default all external keys defined in the mappings for the class are included.
  *
- *  @param keys     Array of NSString keys
+ *  @param keys     Array of `NSString` keys
  *  @param aClass   Class of object
  */
 - (void)registerDictionaryRepresentationKeys:(NSArray *)keys forClass:(Class)aClass;
@@ -148,7 +161,7 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
 /**
  *  Creates a dictionary representation
  *
- *  The dictionary is created using the passed in array of keys. For classes without any mappings, the object is included as is. If a value is nil, or its reverse transformation fails, the key will be set to NSNull.
+ *  The dictionary is created using the passed in array of keys. For classes without any mappings, the object is included as is. If a value is nil, or its reverse transformation fails, the key will be set to `NSNull`.
  *
  *  @param object   The object
  *  @param keys     The keys to include in the dictionary, pass nil to include all
@@ -160,7 +173,9 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
 /**
  *  Creates a dictionary representation
  *
- *  The dictionary is created using the external keys as registered with the mapper, or if none registered those registered for the mappings of the class. For classes without any mappings, the object is included as is. If a value is nil, or its reverse transformation fails, the key will be set to NSNull.
+ *  The dictionary is created using the external keys as registered with the mapper, or if none registered those registered for the mappings of the class. For classes without any mappings, the object is included as is. If a value is nil, or its reverse transformation fails, the key will be set to `NSNull`.
+ *
+ *  @param object   The object
  *
  *  @return Dictionary representation of the object
  */
