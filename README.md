@@ -16,6 +16,11 @@ EFDataMappingKit has a Podspec available, so if you use CocoaPods add
 
 to your Podfile.
 
+Documentation
+=============
+
+Documentation is available [here](http://egeniq.github.io/EFDataMappingKit/documentation/html/).
+
 
 Using EFDataMappingKit
 ======================
