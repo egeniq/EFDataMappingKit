@@ -17,4 +17,7 @@ typedef NS_ENUM(NSInteger, EFMappingErrorCode) {
     EFMappingInitialisationFailed = 5
 };
 
+/**
+ *  Pretty print mapping errors
+ */
 NSString* EFPrettyMappingError(NSError *error);
