@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>--project-name</key>
+	<string>EFDataMappingKit</string>
+	<key>--project-company</key>
+	<string>Egeniq</string>
+	<key>--company-id</key>
+	<string>com.egeniq</string>
+	<key>--create-html</key>
+	<true/>
+	<key>--create-docset</key>
+	<false/>
+	<key>--templates</key>
+	<string>~/Library/Application Support/appledoc/Templates</string>
+	<key>--output</key>
+	<string>documentation</string>
+</dict>
+</plist>
