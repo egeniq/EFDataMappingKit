@@ -19,7 +19,7 @@ to your Podfile.
 Documentation
 =============
 
-Documentation is available [here](/documentation/html/).
+Documentation is available [here](http://johankool.github.io/EFDataMappingKit/documentation/html/).
 
 
 Using EFDataMappingKit
