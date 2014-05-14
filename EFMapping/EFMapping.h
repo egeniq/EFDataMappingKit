@@ -23,9 +23,9 @@ typedef id (^EFMappingTransformationBlock)(id value, BOOL reverse);
 @class EFMapping;
 
 /**
- *  <#Description#>
+ *  Block in which you apply to properties to be used for a mapping
  *
- *  @param mapping <#mapping description#>
+ *  @param mapping `EFMapping` instance to setup
  */
 typedef void (^EFMappingFactoryBlock)(EFMapping *mapping);
 
@@ -45,7 +45,7 @@ typedef void (^EFMappingFactoryBlock)(EFMapping *mapping);
 + (instancetype)mapping:(EFMappingFactoryBlock)factoryBlock;
 
 /**
- *  <#Description#>
+ *  Factory method for creating an `EFMapping` instance for an array
  *
  *  @param factoryBlock Block in which you apply to properties to be used for this mapping
  *
@@ -54,7 +54,7 @@ typedef void (^EFMappingFactoryBlock)(EFMapping *mapping);
 + (instancetype)mappingForArray:(EFMappingFactoryBlock)factoryBlock;
 
 /**
- *  <#Description#>
+ *  Factory method for creating an `EFMapping` instance for a dictionary
  *
  *  @param factoryBlock Block in which you apply to properties to be used for this mapping
  *
@@ -81,22 +81,22 @@ typedef void (^EFMappingFactoryBlock)(EFMapping *mapping);
 - (void)setKey:(NSString *)key;
 
 /**
- *  <#Description#>
+ *  Class of value in local entity
  */
 @property (nonatomic, assign) Class internalClass;
 
 /**
- *  <#Description#>
+ *  Formatter applied to value before setting it on local entity
  */
 @property (nonatomic, strong) NSFormatter *formatter;
 
 /**
- *  <#Description#>
+ *  Value transformer applied to value before setting it on local entity
  */
 @property (nonatomic, strong) NSValueTransformer *transformer;
 
 /**
- *  <#Description#>
+ *  Block applied to value before setting it on local entity
  */
 @property (nonatomic, copy) EFMappingTransformationBlock transformationBlock;
 
@@ -108,19 +108,19 @@ typedef void (^EFMappingFactoryBlock)(EFMapping *mapping);
 #pragma mark - Number (incl. BOOL, integer, floats etc.)
 /** @name Number (incl. BOOL, integer, floats etc.) */
 /**
- *  <#Description#>
+ *  Convenience method for creating a number mapping
  *
- *  @param key <#key description#>
+ *  @param key Key to set on externalKey and internalKey
  *
  *  @return `EFMapping` instance
  */
 + (instancetype)mappingForNumberWithKey:(NSString *)key;
 
 /**
- *  <#Description#>
+ *  Convenience method for creating a number mapping
  *
- *  @param externalKey <#externalKey description#>
- *  @param internalKey <#internalKey description#>
+ *  @param externalKey Key used in the external source
+ *  @param internalKey Key used in local entities
  *
  *  @return `EFMapping` instance
  */
@@ -129,19 +129,19 @@ typedef void (^EFMappingFactoryBlock)(EFMapping *mapping);
 #pragma mark - NSString
 /** @name NSString */
 /**
- *  <#Description#>
+ *  Convenience method for creating a string mapping
  *
- *  @param key <#key description#>
+ *  @param key Key to set on externalKey and internalKey
  *
  *  @return `EFMapping` instance
  */
 + (instancetype)mappingForStringWithKey:(NSString *)key;
 
 /**
- *  <#Description#>
+ *  Convenience method for creating a string mapping
  *
- *  @param externalKey <#externalKey description#>
- *  @param internalKey <#internalKey description#>
+ *  @param externalKey Key used in the external source
+ *  @param internalKey Key used in local entities
  *
  *  @return `EFMapping` instance
  */
@@ -150,21 +150,21 @@ typedef void (^EFMappingFactoryBlock)(EFMapping *mapping);
 #pragma mark - Classes
 /** @name Classes */
 /**
- *  <#Description#>
+ *  Convenience method for creating a class mapping
  *
- *  @param internalClass <#internalClass description#>
- *  @param key           <#key description#>
+ *  @param internalClass Class of value in local entity
+ *  @param key           Key to set on externalKey and internalKey
  *
  *  @return `EFMapping` instance
  */
 + (instancetype)mappingForClass:(Class)internalClass key:(NSString *)key;
 
 /**
- *  <#Description#>
+ *  Convenience method for creating a class mapping
  *
- *  @param internalClass <#internalClass description#>
- *  @param externalKey   <#externalKey description#>
- *  @param internalKey   <#internalKey description#>
+ *  @param internalClass Class of value in local entity
+ *  @param externalKey   Key used in the external source
+ *  @param internalKey   Key used in local entities
  *
  *  @return `EFMapping` instance
  */
@@ -173,21 +173,21 @@ typedef void (^EFMappingFactoryBlock)(EFMapping *mapping);
 #pragma mark - NSArray of classes
 /** @name NSArray of classes */
 /**
- *  <#Description#>
+ *  Convenience method for creating a class mapping for an array
  *
- *  @param internalClass <#internalClass description#>
- *  @param key           <#key description#>
+ *  @param internalClass Class of value in local entity
+ *  @param key           Key to set on externalKey and internalKey
  *
  *  @return `EFMapping` instance
  */
 + (instancetype)mappingForArrayOfClass:(Class)internalClass key:(NSString *)key;
 
 /**
- *  <#Description#>
+ *  Convenience method for creating a class mapping for an array
  *
- *  @param internalClass <#internalClass description#>
- *  @param externalKey   <#externalKey description#>
- *  @param internalKey   <#internalKey description#>
+ *  @param internalClass Class of value in local entity
+ *  @param externalKey   Key used in the external source
+ *  @param internalKey   Key used in local entities
  *
  *  @return `EFMapping` instance
  */

@@ -21,7 +21,7 @@ to your Podfile.
 Documentation
 =============
 
-Documentation is available [here](http://egeniq.github.io/EFDataMappingKit/documentation/html/).
+Documentation is available [here](http://egeniq.github.io/EFDataMappingKit/).
 
 
 Using EFDataMappingKit
@@ -144,21 +144,7 @@ In `MYMessage (Mappings)` implementation:
 ```objective-c
 + (NSArray *)mappings {
     return @[
-        [EFMapping mapping:^(EFMapping *m) {
-            m.internalClass = [NSString class];
-            m.externalKey = @"user_name";
-            m.internalKey = @"username";
-            m.requires = [EFRequires exists];
-        }],
-        [EFMapping mapping:^(EFMapping *m) {
-            m.internalClass = [NSString class];
-            m.key = @"name";
-            m.requires = [EFRequires exists];
-        }],
-        [EFMapping mappingForArray:^(EFMapping *m) {
-            m.internalClass = [MYMessage class];
-            m.key = @"messages";
-        }],
+// TODO
     ];
 }
 ```

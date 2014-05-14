@@ -6,8 +6,18 @@
 //  Copyright (c) 2014 Egeniq. All rights reserved.
 //
 
+/**
+ *  Protocol implemented by `EFRequires` and `NSArray` for evaluating values
+ */
 @protocol EFRequires <NSObject>
 
+/**
+ *  Evaluates if values conforms to requirement
+ *
+ *  @param value Value to evaluate
+ *
+ *  @return YES if value passes validation, NO otherwise
+ */
 - (BOOL)evaluateForValue:(id)value;
 
 @end
@@ -22,13 +32,13 @@
 typedef BOOL (^EFMappingEvaluationBlock)(id value);
 
 /**
- *  Expresses requirements that a value should confirm too.
+ *  Expresses requirements that a value should conform too.
  */
 @interface EFRequires : NSObject <EFRequires>
 
 /** @name Existence */
 /**
- *  <#Description#>
+ *  Requires a value exists
  *
  *  @return EFRequire instance
  */
@@ -36,9 +46,9 @@ typedef BOOL (^EFMappingEvaluationBlock)(id value);
 
 /** @name Custom */
 /**
- *  <#Description#>
+ *  Requires a value passes evaluation
  *
- *  @param evaluationBlock <#evaluationBlock description#>
+ *  @param evaluationBlock Block evaluating the value
  *
  *  @return `EFRequires` instance
  */
@@ -46,45 +56,45 @@ typedef BOOL (^EFMappingEvaluationBlock)(id value);
 
 /** @name Numbers */
 /**
- *  <#Description#>
+ *  Requires a value is larger than certain treshold
  *
- *  @param value <#value description#>
+ *  @param value Threshold
  *
  *  @return `EFRequires` instance
  */
 + (instancetype)largerThan:(NSNumber *)value;
 
 /**
- *  <#Description#>
+ *  Requires a value is larger than or equal to certain treshold
  *
- *  @param value <#value description#>
+ *  @param value Threshold
  *
  *  @return `EFRequires` instance
  */
 + (instancetype)largerThanOrEqualTo:(NSNumber *)value;
 
 /**
- *  <#Description#>
+ *  Requires a value is equal to certain treshold
  *
- *  @param value <#value description#>
+ *  @param value Threshold
  *
  *  @return `EFRequires` instance
  */
 + (instancetype)equalTo:(NSNumber *)value;
 
 /**
- *  <#Description#>
+ *  Requires a value is smaller than certain treshold
  *
- *  @param value <#value description#>
+ *  @param value Threshold
  *
  *  @return `EFRequires` instance
  */
 + (instancetype)smallerThan:(NSNumber *)value;
 
 /**
- *  <#Description#>
+ *  Requires a value is smaller than or equal to certain treshold
  *
- *  @param value <#value description#>
+ *  @param value Threshold
  *
  *  @return `EFRequires` instance
  */
@@ -112,6 +122,9 @@ typedef BOOL (^EFMappingEvaluationBlock)(id value);
 
 @end
 
+/**
+ *  `NSArray` implements the `EFRequires` protocol
+ */
 @interface NSArray (EFRequires) <EFRequires>
 
 @end

@@ -16,36 +16,36 @@
 @interface EFMapper ()
 
 /**
- *  <#Description#>
+ *  Transforms (if needed) any incoming value
  *
- *  @param value   <#value description#>
- *  @param mapping <#mapping description#>
- *  @param reverse <#reverse description#>
- *  @param error   <#error description#>
+ *  @param value   Incoming value
+ *  @param mapping `EFMapping` instance
+ *  @param reverse Perform any transformation in reverse
+ *  @param error   On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify `nil` for this parameter if you do not want the error information.
  *
- *  @return <#return value description#>
+ *  @return Transformed value or nil if error occurred
  */
 - (id)transformValue:(id)value mapping:(EFMapping *)mapping reverse:(BOOL)reverse error:(NSError **)error;
 
 /**
- *  <#Description#>
+ *  Validates an incoming value
  *
- *  @param value        <#value description#>
- *  @param isCollection <#isCollection description#>
- *  @param mapping      <#mapping description#>
- *  @param error        <#error description#>
+ *  @param value        Incoming transformed value
+ *  @param isCollection Indicates wether the incoming value is a collection
+ *  @param mapping      `EFMapping` instance
+ *  @param error        On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify `nil` for this parameter if you do not want the error information.
  *
- *  @return <#return value description#>
+ *  @return YES if value is valid, otherwise NO
  */
 - (BOOL)validateValue:(id)value isCollection:(BOOL)isCollection mapping:(EFMapping *)mapping error:(NSError **)error;
 
 /**
- *  <#Description#>
+ *  Applies incoming value to an object
  *
- *  @param value        <#value description#>
- *  @param object       <#object description#>
- *  @param isCollection <#isCollection description#>
- *  @param mapping      <#mapping description#>
+ *  @param value        Incoming transformed and validated value
+ *  @param object       Object on which the value should be set
+ *  @param isCollection Indicates wether the incoming value is a collection
+ *  @param mapping      `EFMapping` instance
  */
 - (void)setValue:(id)value onObject:(id)object isCollection:(BOOL)isCollection mapping:(EFMapping *)mapping;
 
