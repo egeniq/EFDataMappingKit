@@ -1,0 +1,1493 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
+		<title>EFMapping Class Reference</title>
+		<meta id="xcode-display" name="xcode-display" content="render"/>
+		<meta name="viewport" content="width=550" />
+		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
+		<link rel="stylesheet" type="text/css" media="print" href="../css/stylesPrint.css" />
+		<meta name="generator" content="appledoc 2.1 (build 840)" />
+	</head>
+	<body>
+		<header id="top_header">
+			<div id="library" class="hideInXcode">
+				<h1><a id="libraryTitle" href="../index.html">EFDataMappingKit </a></h1>
+				<a id="developerHome" href="../index.html">Egeniq</a>
+			</div>
+			
+			<div id="title" role="banner">
+				<h1 class="hideInXcode">EFMapping Class Reference</h1>
+			</div>
+			<ul id="headerButtons" role="toolbar">
+				<li id="toc_button">
+					<button aria-label="Show Table of Contents" role="checkbox" class="open" id="table_of_contents"><span class="disclosure"></span>Table of Contents</button>
+				</li>
+				<li id="jumpto_button" role="navigation">
+					<select id="jumpTo">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+	
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+	
+	
+	
+	<option value="properties">Properties</option>
+	
+	<option value="//api/name/externalKey">&nbsp;&nbsp;&nbsp;&nbsp;externalKey</option>
+	
+	<option value="//api/name/formatter">&nbsp;&nbsp;&nbsp;&nbsp;formatter</option>
+	
+	<option value="//api/name/internalClass">&nbsp;&nbsp;&nbsp;&nbsp;internalClass</option>
+	
+	<option value="//api/name/internalKey">&nbsp;&nbsp;&nbsp;&nbsp;internalKey</option>
+	
+	<option value="//api/name/requires">&nbsp;&nbsp;&nbsp;&nbsp;requires</option>
+	
+	<option value="//api/name/transformationBlock">&nbsp;&nbsp;&nbsp;&nbsp;transformationBlock</option>
+	
+	<option value="//api/name/transformer">&nbsp;&nbsp;&nbsp;&nbsp;transformer</option>
+	
+	
+	
+	
+	<option value="class_methods">Class Methods</option>
+	
+	<option value="//api/name/mapping:">&nbsp;&nbsp;&nbsp;&nbsp;+ mapping:</option>
+	
+	<option value="//api/name/mappingForArray:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForArray:</option>
+	
+	<option value="//api/name/mappingForArrayOfClass:externalKey:internalKey:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForArrayOfClass:externalKey:internalKey:</option>
+	
+	<option value="//api/name/mappingForArrayOfClass:key:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForArrayOfClass:key:</option>
+	
+	<option value="//api/name/mappingForClass:externalKey:internalKey:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForClass:externalKey:internalKey:</option>
+	
+	<option value="//api/name/mappingForClass:key:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForClass:key:</option>
+	
+	<option value="//api/name/mappingForDictionary:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForDictionary:</option>
+	
+	<option value="//api/name/mappingForNumberWithExternalKey:internalKey:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForNumberWithExternalKey:internalKey:</option>
+	
+	<option value="//api/name/mappingForNumberWithKey:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForNumberWithKey:</option>
+	
+	<option value="//api/name/mappingForStringWithExternalKey:internalKey:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForStringWithExternalKey:internalKey:</option>
+	
+	<option value="//api/name/mappingForStringWithKey:">&nbsp;&nbsp;&nbsp;&nbsp;+ mappingForStringWithKey:</option>
+	
+	
+	
+	
+	<option value="instance_methods">Instance Methods</option>
+	
+	<option value="//api/name/setKey:">&nbsp;&nbsp;&nbsp;&nbsp;- setKey:</option>
+	
+	
+	
+</select>
+				</li>
+			</ul>
+		</header>
+		<nav id="tocContainer" class="isShowingTOC">
+			<ul id="toc" role="tree">
+				
+<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">Overview</a></span></li>
+
+
+
+
+<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">Tasks</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Factories">Factories</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Properties">Properties</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Number (incl. BOOL, integer, floats etc.)">Number (incl. BOOL, integer, floats etc.)</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_NSString">NSString</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Classes">Classes</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_NSArray of classes">NSArray of classes</a></span></li>
+	
+</ul></li>
+
+
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#properties">Properties</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/externalKey">externalKey</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/formatter">formatter</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/internalClass">internalClass</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/internalKey">internalKey</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/requires">requires</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/transformationBlock">transformationBlock</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/transformer">transformer</a></span></li>
+	
+</ul></li>
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">Class Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mapping:">mapping:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForArray:">mappingForArray:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForArrayOfClass:externalKey:internalKey:">mappingForArrayOfClass:externalKey:internalKey:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForArrayOfClass:key:">mappingForArrayOfClass:key:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForClass:externalKey:internalKey:">mappingForClass:externalKey:internalKey:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForClass:key:">mappingForClass:key:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForDictionary:">mappingForDictionary:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForNumberWithExternalKey:internalKey:">mappingForNumberWithExternalKey:internalKey:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForNumberWithKey:">mappingForNumberWithKey:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForStringWithExternalKey:internalKey:">mappingForStringWithExternalKey:internalKey:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mappingForStringWithKey:">mappingForStringWithKey:</a></span></li>
+	
+</ul></li>
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">Instance Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/setKey:">setKey:</a></span></li>
+	
+</ul></li>
+
+
+			</ul>
+		</nav>
+		<article>
+			<div id="contents" class="isShowingTOC" role="main">
+				<a title="EFMapping Class Reference" name="top"></a>
+				<div class="main-navigation navigation-top">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="header">
+					<div class="section-header">
+						<h1 class="title title-header">EFMapping Class Reference</h1>
+					</div>		
+				</div>
+				<div id="container">	
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<td class="specification-title">Inherits from</td>
+	<td class="specification-value">NSObject</td>
+</tr><tr>
+	<td class="specification-title">Declared in</td>
+	<td class="specification-value">EFMapping.h<br />EFMapping.m</td>
+</tr>
+						</tbody></table></div>
+					
+					
+					
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p><code>EFMapping</code> instances define how data from an external source, such as JSON, needs to be applied to instances.</p>
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						<h2 class="subtitle subtitle-tasks">Tasks</h2>
+						
+						
+						<a title="Factories" name="task_Factories"></a>
+						<h3 class="subsubtitle task-title">Factories</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mapping:">+&nbsp;mapping:</a></code>
+		<span class="tooltip"><p>Factory method for creating an <code>EFMapping</code> instance</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForArray:">+&nbsp;mappingForArray:</a></code>
+		<span class="tooltip"><p>Factory method for creating an <code>EFMapping</code> instance for an array</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForDictionary:">+&nbsp;mappingForDictionary:</a></code>
+		<span class="tooltip"><p>Factory method for creating an <code>EFMapping</code> instance for a dictionary</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="Properties" name="task_Properties"></a>
+						<h3 class="subsubtitle task-title">Properties</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/externalKey">&nbsp;&nbsp;externalKey</a></code>
+		<span class="tooltip"><p>Key used in the external source</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/internalKey">&nbsp;&nbsp;internalKey</a></code>
+		<span class="tooltip"><p>Key used in local entities</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/setKey:">&ndash;&nbsp;setKey:</a></code>
+		<span class="tooltip"><p>Convenience method to set both the <a href="#//api/name/externalKey">externalKey</a> and <a href="#//api/name/internalKey">internalKey</a> properties to the same value</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/internalClass">&nbsp;&nbsp;internalClass</a></code>
+		<span class="tooltip"><p>Class of value in local entity</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/formatter">&nbsp;&nbsp;formatter</a></code>
+		<span class="tooltip"><p>Formatter applied to value before setting it on local entity</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/transformer">&nbsp;&nbsp;transformer</a></code>
+		<span class="tooltip"><p>Value transformer applied to value before setting it on local entity</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/transformationBlock">&nbsp;&nbsp;transformationBlock</a></code>
+		<span class="tooltip"><p>Block applied to value before setting it on local entity</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/requires">&nbsp;&nbsp;requires</a></code>
+		<span class="tooltip"><p>An <a href="../Classes/EFRequires.html"><code>EFRequires</code></a> instance, or an <code>NSArray</code> of <a href="../Classes/EFRequires.html"><code>EFRequires</code></a> instances, for which the incoming value should pass</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li>
+						</ul>
+						
+						
+						<a title="Number (incl. BOOL, integer, floats etc.)" name="task_Number (incl. BOOL, integer, floats etc.)"></a>
+						<h3 class="subsubtitle task-title">Number (incl. BOOL, integer, floats etc.)</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForNumberWithKey:">+&nbsp;mappingForNumberWithKey:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a number mapping</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForNumberWithExternalKey:internalKey:">+&nbsp;mappingForNumberWithExternalKey:internalKey:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a number mapping</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="NSString" name="task_NSString"></a>
+						<h3 class="subsubtitle task-title">NSString</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForStringWithKey:">+&nbsp;mappingForStringWithKey:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a string mapping</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForStringWithExternalKey:internalKey:">+&nbsp;mappingForStringWithExternalKey:internalKey:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a string mapping</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="Classes" name="task_Classes"></a>
+						<h3 class="subsubtitle task-title">Classes</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForClass:key:">+&nbsp;mappingForClass:key:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a class mapping</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForClass:externalKey:internalKey:">+&nbsp;mappingForClass:externalKey:internalKey:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a class mapping</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="NSArray of classes" name="task_NSArray of classes"></a>
+						<h3 class="subsubtitle task-title">NSArray of classes</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForArrayOfClass:key:">+&nbsp;mappingForArrayOfClass:key:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a class mapping for an array</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mappingForArrayOfClass:externalKey:internalKey:">+&nbsp;mappingForArrayOfClass:externalKey:internalKey:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a class mapping for an array</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Properties" name="properties"></a>
+						<h2 class="subtitle subtitle-methods">Properties</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/externalKey" title="externalKey"></a>
+	<h3 class="subsubtitle method-title">externalKey</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Key used in the external source</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSString *externalKey</code></div>
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Key used in the external source</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/formatter" title="formatter"></a>
+	<h3 class="subsubtitle method-title">formatter</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Formatter applied to value before setting it on local entity</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSFormatter *formatter</code></div>
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Formatter applied to value before setting it on local entity</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/internalClass" title="internalClass"></a>
+	<h3 class="subsubtitle method-title">internalClass</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Class of value in local entity</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) Class internalClass</code></div>
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Class of value in local entity</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/internalKey" title="internalKey"></a>
+	<h3 class="subsubtitle method-title">internalKey</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Key used in local entities</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSString *internalKey</code></div>
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Key used in local entities</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/requires" title="requires"></a>
+	<h3 class="subsubtitle method-title">requires</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>An <a href="../Classes/EFRequires.html"><code>EFRequires</code></a> instance, or an <code>NSArray</code> of <a href="../Classes/EFRequires.html"><code>EFRequires</code></a> instances, for which the incoming value should pass</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) id&lt;EFRequires&gt; requires</code></div>
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>An <a href="../Classes/EFRequires.html"><code>EFRequires</code></a> instance, or an <code>NSArray</code> of <a href="../Classes/EFRequires.html"><code>EFRequires</code></a> instances, for which the incoming value should pass</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/transformationBlock" title="transformationBlock"></a>
+	<h3 class="subsubtitle method-title">transformationBlock</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Block applied to value before setting it on local entity</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) EFMappingTransformationBlock transformationBlock</code></div>
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Block applied to value before setting it on local entity</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/transformer" title="transformer"></a>
+	<h3 class="subsubtitle method-title">transformer</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Value transformer applied to value before setting it on local entity</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSValueTransformer *transformer</code></div>
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Value transformer applied to value before setting it on local entity</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Class Methods" name="class_methods"></a>
+						<h2 class="subtitle subtitle-methods">Class Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/mapping:" title="mapping:"></a>
+	<h3 class="subsubtitle method-title">mapping:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Factory method for creating an <code>EFMapping</code> instance</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mapping:(EFMappingFactoryBlock)<em>factoryBlock</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>factoryBlock</em></dt>
+			<dd><p>Block in which you apply to properties to be used for this mapping</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Factory method for creating an <code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForArray:" title="mappingForArray:"></a>
+	<h3 class="subsubtitle method-title">mappingForArray:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Factory method for creating an <code>EFMapping</code> instance for an array</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForArray:(EFMappingFactoryBlock)<em>factoryBlock</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>factoryBlock</em></dt>
+			<dd><p>Block in which you apply to properties to be used for this mapping</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Factory method for creating an <code>EFMapping</code> instance for an array</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForArrayOfClass:externalKey:internalKey:" title="mappingForArrayOfClass:externalKey:internalKey:"></a>
+	<h3 class="subsubtitle method-title">mappingForArrayOfClass:externalKey:internalKey:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a class mapping for an array</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForArrayOfClass:(Class)<em>internalClass</em> externalKey:(NSString *)<em>externalKey</em> internalKey:(NSString *)<em>internalKey</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>internalClass</em></dt>
+			<dd><p>Class of value in local entity</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>externalKey</em></dt>
+			<dd><p>Key used in the external source</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>internalKey</em></dt>
+			<dd><p>Key used in local entities</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a class mapping for an array</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForArrayOfClass:key:" title="mappingForArrayOfClass:key:"></a>
+	<h3 class="subsubtitle method-title">mappingForArrayOfClass:key:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a class mapping for an array</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForArrayOfClass:(Class)<em>internalClass</em> key:(NSString *)<em>key</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>internalClass</em></dt>
+			<dd><p>Class of value in local entity</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>key</em></dt>
+			<dd><p>Key to set on <a href="#//api/name/externalKey">externalKey</a> and <a href="#//api/name/internalKey">internalKey</a></p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a class mapping for an array</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForClass:externalKey:internalKey:" title="mappingForClass:externalKey:internalKey:"></a>
+	<h3 class="subsubtitle method-title">mappingForClass:externalKey:internalKey:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a class mapping</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForClass:(Class)<em>internalClass</em> externalKey:(NSString *)<em>externalKey</em> internalKey:(NSString *)<em>internalKey</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>internalClass</em></dt>
+			<dd><p>Class of value in local entity</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>externalKey</em></dt>
+			<dd><p>Key used in the external source</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>internalKey</em></dt>
+			<dd><p>Key used in local entities</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a class mapping</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForClass:key:" title="mappingForClass:key:"></a>
+	<h3 class="subsubtitle method-title">mappingForClass:key:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a class mapping</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForClass:(Class)<em>internalClass</em> key:(NSString *)<em>key</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>internalClass</em></dt>
+			<dd><p>Class of value in local entity</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>key</em></dt>
+			<dd><p>Key to set on <a href="#//api/name/externalKey">externalKey</a> and <a href="#//api/name/internalKey">internalKey</a></p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a class mapping</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForDictionary:" title="mappingForDictionary:"></a>
+	<h3 class="subsubtitle method-title">mappingForDictionary:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Factory method for creating an <code>EFMapping</code> instance for a dictionary</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForDictionary:(EFMappingFactoryBlock)<em>factoryBlock</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>factoryBlock</em></dt>
+			<dd><p>Block in which you apply to properties to be used for this mapping</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Factory method for creating an <code>EFMapping</code> instance for a dictionary</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForNumberWithExternalKey:internalKey:" title="mappingForNumberWithExternalKey:internalKey:"></a>
+	<h3 class="subsubtitle method-title">mappingForNumberWithExternalKey:internalKey:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a number mapping</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForNumberWithExternalKey:(NSString *)<em>externalKey</em> internalKey:(NSString *)<em>internalKey</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>externalKey</em></dt>
+			<dd><p>Key used in the external source</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>internalKey</em></dt>
+			<dd><p>Key used in local entities</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a number mapping</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForNumberWithKey:" title="mappingForNumberWithKey:"></a>
+	<h3 class="subsubtitle method-title">mappingForNumberWithKey:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a number mapping</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForNumberWithKey:(NSString *)<em>key</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>key</em></dt>
+			<dd><p>Key to set on <a href="#//api/name/externalKey">externalKey</a> and <a href="#//api/name/internalKey">internalKey</a></p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a number mapping</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForStringWithExternalKey:internalKey:" title="mappingForStringWithExternalKey:internalKey:"></a>
+	<h3 class="subsubtitle method-title">mappingForStringWithExternalKey:internalKey:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a string mapping</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForStringWithExternalKey:(NSString *)<em>externalKey</em> internalKey:(NSString *)<em>internalKey</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>externalKey</em></dt>
+			<dd><p>Key used in the external source</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>internalKey</em></dt>
+			<dd><p>Key used in local entities</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a string mapping</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mappingForStringWithKey:" title="mappingForStringWithKey:"></a>
+	<h3 class="subsubtitle method-title">mappingForStringWithKey:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a string mapping</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)mappingForStringWithKey:(NSString *)<em>key</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>key</em></dt>
+			<dd><p>Key to set on <a href="#//api/name/externalKey">externalKey</a> and <a href="#//api/name/internalKey">internalKey</a></p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>EFMapping</code> instance</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a string mapping</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Instance Methods" name="instance_methods"></a>
+						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/setKey:" title="setKey:"></a>
+	<h3 class="subsubtitle method-title">setKey:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method to set both the <a href="#//api/name/externalKey">externalKey</a> and <a href="#//api/name/internalKey">internalKey</a> properties to the same value</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>- (void)setKey:(NSString *)<em>key</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>key</em></dt>
+			<dd><p>Key to set on <a href="#//api/name/externalKey">externalKey</a> and <a href="#//api/name/internalKey">internalKey</a></p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method to set both the <a href="#//api/name/externalKey">externalKey</a> and <a href="#//api/name/internalKey">internalKey</a> properties to the same value</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapping.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+				</div>
+				<div class="main-navigation navigation-bottom">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="footer">
+					<hr />
+					<div class="footer-copyright">
+						<p><span class="copyright">&copy; 2014 Egeniq. All rights reserved. (Last updated: 2014-05-15)</span><br />
+						
+						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.1 (build 840)</a>.</span></p>
+						
+					</div>
+				</div>
+			</div>
+		</article>
+		<script type="text/javascript">
+			function jumpToChange()
+			{
+				window.location.hash = this.options[this.selectedIndex].value;
+			}
+			
+			function toggleTOC()
+			{
+				var contents = document.getElementById('contents');
+				var tocContainer = document.getElementById('tocContainer');
+				
+				if (this.getAttribute('class') == 'open')
+				{
+					this.setAttribute('class', '');
+					contents.setAttribute('class', '');
+					tocContainer.setAttribute('class', '');
+					
+					window.name = "hideTOC";
+				}
+				else
+				{
+					this.setAttribute('class', 'open');
+					contents.setAttribute('class', 'isShowingTOC');
+					tocContainer.setAttribute('class', 'isShowingTOC');
+					
+					window.name = "";
+				}
+				return false;
+			}
+			
+			function toggleTOCEntryChildren(e)
+			{
+				e.stopPropagation();
+				var currentClass = this.getAttribute('class');
+				if (currentClass == 'children') {
+					this.setAttribute('class', 'children open');
+				}
+				else if (currentClass == 'children open') {
+					this.setAttribute('class', 'children');
+				}
+				return false;
+			}
+			
+			function tocEntryClick(e)
+			{
+				e.stopPropagation();
+				return true;
+			}
+			
+			function init()
+			{
+				var selectElement = document.getElementById('jumpTo');
+				selectElement.addEventListener('change', jumpToChange, false);
+				
+				var tocButton = document.getElementById('table_of_contents');
+				tocButton.addEventListener('click', toggleTOC, false);
+				
+				var taskTreeItem = document.getElementById('task_treeitem');
+				if (taskTreeItem.getElementsByTagName('li').length > 0)
+				{
+					taskTreeItem.setAttribute('class', 'children');
+					taskTreeItem.firstChild.setAttribute('class', 'disclosure');
+				}
+				
+				var tocList = document.getElementById('toc');
+				
+				var tocEntries = tocList.getElementsByTagName('li');
+				for (var i = 0; i < tocEntries.length; i++) {
+					tocEntries[i].addEventListener('click', toggleTOCEntryChildren, false);
+				}
+				
+				var tocLinks = tocList.getElementsByTagName('a');
+				for (var i = 0; i < tocLinks.length; i++) {
+					tocLinks[i].addEventListener('click', tocEntryClick, false);
+				}
+				
+				if (window.name == "hideTOC") {
+					toggleTOC.call(tocButton);
+				}
+			}
+			
+			window.onload = init;
+		</script>
+	</body>
+</html>
