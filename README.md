@@ -36,21 +36,21 @@ Let's take this example of JSON describing an user:
     "messages": [
         {
             "message_id": 1,
-            "published_at": "",
-            "read": false,
-            "text": ""
+            "published_at": "2014-02-13",
+            "read": true,
+            "text": "FYI, tomorrow night I am hanging out with the guys!"
         },
         {
             "message_id": 2,
-            "published_at": "",
+            "published_at": "2014-02-14",
             "read": false,
-            "text": ""
+            "text": "Just kidding, romantic dinner by candle light awaits you!"
         },
         {
             "message_id": 3,
-            "published_at": "",
+            "published_at": "2014-02-15",
             "read": false,
-            "text": ""
+            "text": "Darling?!"
         }
     ],
     "website": "http://www.example.com"
@@ -144,7 +144,22 @@ In `MYMessage (Mappings)` implementation:
 ```objective-c
 + (NSArray *)mappings {
     return @[
-// TODO
+        [EFMapping mapping:^(EFMapping *m) {
+            m.internalClass = [NSNumber class];
+            m.externalKey = @"message_id";
+            m.internalKey = @"messageId";
+            m.requires = [EFRequires exists];
+        }],
+        [EFMapping mapping:^(EFMapping *m) {
+            m.internalClass = [NSDate class];
+            m.externalKey = @"published_at";
+            m.internalKey = @"pulicationDate";
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+            m.formatter = dateFormatter;
+        }],
+        [EFMapping mappingForNumberWithKey:@"read"],
+        [EFMapping mappingForStringWithKey:@"text"]
     ];
 }
 ```
