@@ -67,7 +67,13 @@
 	
 	<option value="//api/name/registerMappings:forClass:">&nbsp;&nbsp;&nbsp;&nbsp;- registerMappings:forClass:</option>
 	
+	<option value="//api/name/setValue:onObject:isCollection:mapping:">&nbsp;&nbsp;&nbsp;&nbsp;- setValue:onObject:isCollection:mapping:</option>
+	
 	<option value="//api/name/setValues:onObject:error:">&nbsp;&nbsp;&nbsp;&nbsp;- setValues:onObject:error:</option>
+	
+	<option value="//api/name/transformValue:mapping:reverse:error:">&nbsp;&nbsp;&nbsp;&nbsp;- transformValue:mapping:reverse:error:</option>
+	
+	<option value="//api/name/validateValue:isCollection:mapping:error:">&nbsp;&nbsp;&nbsp;&nbsp;- validateValue:isCollection:mapping:error:</option>
 	
 	<option value="//api/name/validateValues:forClass:error:">&nbsp;&nbsp;&nbsp;&nbsp;- validateValues:forClass:error:</option>
 	
@@ -137,7 +143,13 @@
 	
 	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/registerMappings:forClass:">registerMappings:forClass:</a></span></li>
 	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/setValue:onObject:isCollection:mapping:">setValue:onObject:isCollection:mapping:</a></span></li>
+	
 	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/setValues:onObject:error:">setValues:onObject:error:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/transformValue:mapping:reverse:error:">transformValue:mapping:reverse:error:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/validateValue:isCollection:mapping:error:">validateValue:isCollection:mapping:error:</a></span></li>
 	
 	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/validateValues:forClass:error:">validateValues:forClass:error:</a></span></li>
 	
@@ -181,6 +193,8 @@
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
 						<p><code>EFMapper</code> maps data such as those coming from JSON onto an instance using mappings. The mappings are also used to simplify implementing the <code>NSCoding</code> protocol for a class, and to create a dictionary representation of an instance.</p>
+
+<p>Override these methods when implementing custom <code>EFMapper</code> subclasses.</p>
 					</div>
 					
 					
@@ -324,6 +338,35 @@
 	<span class="tooltip">
 		<code><a href="#//api/name/dictionaryRepresentationOfObject:">&ndash;&nbsp;dictionaryRepresentationOfObject:</a></code>
 		<span class="tooltip"><p>Creates a dictionary representation</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						
+						<h3 class="subsubtitle task-title">Other Methods</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/transformValue:mapping:reverse:error:">&ndash;&nbsp;transformValue:mapping:reverse:error:</a></code>
+		<span class="tooltip"><p>Transforms (if needed) any incoming value</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/validateValue:isCollection:mapping:error:">&ndash;&nbsp;validateValue:isCollection:mapping:error:</a></code>
+		<span class="tooltip"><p>Validates an incoming value</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/setValue:onObject:isCollection:mapping:">&ndash;&nbsp;setValue:onObject:isCollection:mapping:</a></code>
+		<span class="tooltip"><p>Applies incoming value to an object</p></span>
 	</span>
 	
 	
@@ -652,7 +695,7 @@
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>error</em></dt>
-			<dd><p>Error when invalid values are encountered</p></dd>
+			<dd><p>On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify <code>nil</code> for this parameter if you do not want the error information.</p></dd>
 		</dl>
 		
 	</div>
@@ -912,6 +955,70 @@
 </div>
 						
 						<div class="section-method">
+	<a name="//api/name/setValue:onObject:isCollection:mapping:" title="setValue:onObject:isCollection:mapping:"></a>
+	<h3 class="subsubtitle method-title">setValue:onObject:isCollection:mapping:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Applies incoming value to an object</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>- (void)setValue:(id)<em>value</em> onObject:(id)<em>object</em> isCollection:(BOOL)<em>isCollection</em> mapping:(EFMapping *)<em>mapping</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>value</em></dt>
+			<dd><p>Incoming transformed and validated value</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>object</em></dt>
+			<dd><p>Object on which the value should be set</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>isCollection</em></dt>
+			<dd><p>Indicates wether the incoming value is a collection</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapping</em></dt>
+			<dd><p><a href="../Classes/EFMapping.html"><code>EFMapping</code></a> instance</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Applies incoming value to an object</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapper-Subclass.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
 	<a name="//api/name/setValues:onObject:error:" title="setValues:onObject:error:"></a>
 	<h3 class="subsubtitle method-title">setValues:onObject:error:</h3>
 	
@@ -940,7 +1047,7 @@
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>error</em></dt>
-			<dd><p>Error when invalid values are encountered</p></dd>
+			<dd><p>On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify <code>nil</code> for this parameter if you do not want the error information.</p></dd>
 		</dl>
 		
 	</div>
@@ -978,6 +1085,144 @@
 </div>
 						
 						<div class="section-method">
+	<a name="//api/name/transformValue:mapping:reverse:error:" title="transformValue:mapping:reverse:error:"></a>
+	<h3 class="subsubtitle method-title">transformValue:mapping:reverse:error:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Transforms (if needed) any incoming value</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>- (id)transformValue:(id)<em>value</em> mapping:(EFMapping *)<em>mapping</em> reverse:(BOOL)<em>reverse</em> error:(NSError **)<em>error</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>value</em></dt>
+			<dd><p>Incoming value</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapping</em></dt>
+			<dd><p><a href="../Classes/EFMapping.html"><code>EFMapping</code></a> instance</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>reverse</em></dt>
+			<dd><p>Perform any transformation in reverse</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>error</em></dt>
+			<dd><p>On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify <code>nil</code> for this parameter if you do not want the error information.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>Transformed value or nil if error occurred</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Transforms (if needed) any incoming value</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapper-Subclass.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/validateValue:isCollection:mapping:error:" title="validateValue:isCollection:mapping:error:"></a>
+	<h3 class="subsubtitle method-title">validateValue:isCollection:mapping:error:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Validates an incoming value</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>- (BOOL)validateValue:(id)<em>value</em> isCollection:(BOOL)<em>isCollection</em> mapping:(EFMapping *)<em>mapping</em> error:(NSError **)<em>error</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>value</em></dt>
+			<dd><p>Incoming transformed value</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>isCollection</em></dt>
+			<dd><p>Indicates wether the incoming value is a collection</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapping</em></dt>
+			<dd><p><a href="../Classes/EFMapping.html"><code>EFMapping</code></a> instance</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>error</em></dt>
+			<dd><p>On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify <code>nil</code> for this parameter if you do not want the error information.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>YES if value is valid, otherwise NO</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Validates an incoming value</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFMapper-Subclass.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
 	<a name="//api/name/validateValues:forClass:error:" title="validateValues:forClass:error:"></a>
 	<h3 class="subsubtitle method-title">validateValues:forClass:error:</h3>
 	
@@ -1006,7 +1251,7 @@
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>error</em></dt>
-			<dd><p>Error when invalid values are encountered</p></dd>
+			<dd><p>On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify <code>nil</code> for this parameter if you do not want the error information.</p></dd>
 		</dl>
 		
 	</div>
@@ -1072,7 +1317,7 @@
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>error</em></dt>
-			<dd><p>Error when invalid values are encountered</p></dd>
+			<dd><p>On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify <code>nil</code> for this parameter if you do not want the error information.</p></dd>
 		</dl>
 		
 	</div>
@@ -1122,7 +1367,7 @@
 				<div id="footer">
 					<hr />
 					<div class="footer-copyright">
-						<p><span class="copyright">&copy; 2014 Egeniq. All rights reserved. (Last updated: 2014-05-11)</span><br />
+						<p><span class="copyright">&copy; 2014 Egeniq. All rights reserved. (Last updated: 2014-05-15)</span><br />
 						
 						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.1 (build 840)</a>.</span></p>
 						
