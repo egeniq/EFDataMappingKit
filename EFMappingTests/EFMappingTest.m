@@ -73,6 +73,13 @@
         m.externalKey = @"id";
         m.internalKey = @"guid";
         m.requires = [EFRequires exists];
+        m.transformationBlock = ^id(id value, BOOL reverse) {
+            if (reverse) {
+                return [(NSURL *)value absoluteString];
+            } else {
+                return [NSURL URLWithString:(NSString *)value];
+            }
+        };
     }]] forClass:[EFSample class]];
 
     NSError *error;
@@ -101,6 +108,14 @@
     XCTAssertEqual(components.year, 2014, @"Expected year 2014");
     XCTAssertEqual(components.month, 4, @"Expected month 4");
     XCTAssertEqual(components.day, 1, @"Expected day 1");
+}
+
+- (void)testCustomInitializers {
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerInitializer:^id(__unsafe_unretained Class aClass, NSDictionary *values) {
+        NSString *username = values[@"user_name"];
+        return [[aClass alloc] initWithUsername:username];
+    } forClass:[MYUser class]];
 }
 
 - (void)testEncoding {
