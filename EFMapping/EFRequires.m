@@ -25,12 +25,14 @@
 }
 
 + (instancetype)passes:(EFMappingEvaluationBlock)evaluationBlock {
+    NSParameterAssert(evaluationBlock);
     EFRequires *requires = [[[self class] alloc] init];
     requires.evaluationBlock = evaluationBlock;
     return requires;
 }
 
 + (instancetype)largerThan:(NSNumber *)compareValue {
+    NSParameterAssert(compareValue);
     EFRequires *requires = [[[self class] alloc] init];
     requires.evaluationBlock = ^BOOL (id value) {
         return [value compare:compareValue] == NSOrderedDescending;
@@ -39,6 +41,7 @@
 }
 
 + (instancetype)largerThanOrEqualTo:(NSNumber *)compareValue {
+    NSParameterAssert(compareValue);
     EFRequires *requires = [[[self class] alloc] init];
     requires.evaluationBlock = ^BOOL (id value) {
         return [value compare:compareValue] != NSOrderedAscending;
@@ -47,6 +50,7 @@
 }
 
 + (instancetype)equalTo:(NSNumber *)compareValue {
+    NSParameterAssert(compareValue);
     EFRequires *requires = [[[self class] alloc] init];
     requires.evaluationBlock = ^BOOL (id value) {
         return [value compare:compareValue] == NSOrderedSame;
@@ -55,6 +59,7 @@
 }
 
 + (instancetype)smallerThan:(NSNumber *)compareValue {
+    NSParameterAssert(compareValue);
     EFRequires *requires = [[[self class] alloc] init];
     requires.evaluationBlock = ^BOOL (id value) {
         return [value compare:compareValue] == NSOrderedAscending;
@@ -63,6 +68,7 @@
 }
 
 + (instancetype)smallerThanOrEqualTo:(NSNumber *)compareValue {
+    NSParameterAssert(compareValue);
     EFRequires *requires = [[[self class] alloc] init];
     requires.evaluationBlock = ^BOOL (id value) {
         return [value compare:compareValue] != NSOrderedDescending;
@@ -71,6 +77,8 @@
 }
 
 + (instancetype)either:(id <EFRequires>)requirements1 or:(id <EFRequires>)requirements2 {
+    NSParameterAssert(requirements1);
+    NSParameterAssert(requirements2);
     EFRequires *requires = [[[self class] alloc] init];
     requires.evaluationBlock = ^BOOL (id value) {
         return ([requirements1 evaluateForValue:value] || [requirements2 evaluateForValue:value]);
@@ -79,6 +87,7 @@
 }
 
 + (instancetype)not:(id <EFRequires>)requirements {
+    NSParameterAssert(requirements);
     EFRequires *requires = [[[self class] alloc] init];
     requires.evaluationBlock = ^BOOL (id value) {
         return ![requirements evaluateForValue:value];

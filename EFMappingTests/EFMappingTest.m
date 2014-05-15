@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSDate *creationDate;
 @property (nonatomic, strong) EFSample *sample;
 @property (nonatomic, copy) NSArray *relatedSamples;
+@property (nonatomic, assign, readonly) BOOL customInit;
 
 @end
 
@@ -33,6 +34,14 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeInteger:0 forKey:@"version"];
     [[EFMapper sharedInstance] encodeObject:self withCoder:aCoder];
+}
+
+- (id)initCustomized {
+    self = [super init];
+    if (self) {
+        _customInit = YES;
+    }
+    return self;
 }
 
 @end
@@ -73,6 +82,13 @@
         m.externalKey = @"id";
         m.internalKey = @"guid";
         m.requires = [EFRequires exists];
+        m.transformationBlock = ^id(id value, BOOL reverse) {
+            if (reverse) {
+                return [(NSURL *)value absoluteString];
+            } else {
+                return [NSURL URLWithString:(NSString *)value];
+            }
+        };
     }]] forClass:[EFSample class]];
 
     NSError *error;
@@ -101,6 +117,20 @@
     XCTAssertEqual(components.year, 2014, @"Expected year 2014");
     XCTAssertEqual(components.month, 4, @"Expected month 4");
     XCTAssertEqual(components.day, 1, @"Expected day 1");
+}
+
+- (void)testCustomInitializers {
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerInitializer:^id(__unsafe_unretained Class aClass, NSDictionary *values) {;
+        return [[aClass alloc] initCustomized];
+    } forClass:[EFSample class]];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m){m.internalClass = [NSString class]; m.externalKey = @"id"; m.internalKey = @"guid"; m.requires = [EFRequires exists];}]
+                               ] forClass:[EFSample class]];
+
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1"} error:&error];
+    XCTAssertNotNil(sample, @"Expected values to be valid but found error %@", EFPrettyMappingError(error));
+    XCTAssertTrue(sample.customInit, @"Expected custom init to be used");
 }
 
 - (void)testEncoding {

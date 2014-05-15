@@ -81,7 +81,7 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
  *
  *  @param values The values to be validated
  *  @param aClass Class of object
- *  @param error  Error when invalid values are encountered
+ *  @param error  On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify `nil` for this parameter if you do not want the error information.
  *
  *  @return YES if all values are valid, NO otherwise
  */
@@ -94,7 +94,7 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
  *
  *  @param values   The values to be validated
  *  @param object   The object
- *  @param error    Error when invalid values are encountered
+ *  @param error    On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify `nil` for this parameter if you do not want the error information.
  *
  *  @return YES if all values are valid, NO otherwise
  */
@@ -107,7 +107,7 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
  *
  *  @param values The values to be applied
  *  @param object The object
- *  @param error  Error when invalid values are encountered
+ *  @param error  On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify `nil` for this parameter if you do not want the error information.
  *
  *  @return YES if all values are valid, NO otherwise
  */
@@ -118,7 +118,7 @@ typedef id (^EFMappingInitializerBlock)(Class aClass, NSDictionary *values);
  *
  *  @param aClass Class of object
  *  @param values The values to be applied
- *  @param error  Error when invalid values are encountered
+ *  @param error  On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify `nil` for this parameter if you do not want the error information.
  *
  *  @return New object if all values are valid, nil otherwise
  */

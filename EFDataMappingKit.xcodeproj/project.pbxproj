@@ -49,6 +49,10 @@
 		C70D5E2218DE0AE900E7B749 /* EFDataMappingKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "EFDataMappingKitTests-Info.plist"; sourceTree = "<group>"; };
 		C70D5E2418DE0AE900E7B749 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C70D5E3318DE0B3A00E7B749 /* EFMappingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFMappingTest.m; sourceTree = "<group>"; };
+		C7446A761921B4F700321349 /* AppledocSettings.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = AppledocSettings.plist; sourceTree = "<group>"; };
+		C7446A771921B4F700321349 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		C7446A781921B4F700321349 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		C7446A791921BD0F00321349 /* EFMapper-Subclass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EFMapper-Subclass.h"; sourceTree = "<group>"; };
 		C778B35918DF32EC00FFB5F2 /* EFDataMappingKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = EFDataMappingKit.podspec; sourceTree = "<group>"; };
 		C7E5452E18EA668700B56C3E /* EFAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFAppDelegate.h; sourceTree = "<group>"; };
 		C7E5452F18EA668700B56C3E /* EFAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFAppDelegate.m; sourceTree = "<group>"; };
@@ -96,6 +100,9 @@
 		C70D5DF518DE0AE700E7B749 = {
 			isa = PBXGroup;
 			children = (
+				C7446A761921B4F700321349 /* AppledocSettings.plist */,
+				C7446A771921B4F700321349 /* LICENSE */,
+				C7446A781921B4F700321349 /* README.md */,
 				C778B35918DF32EC00FFB5F2 /* EFDataMappingKit.podspec */,
 				C70D5E0718DE0AE800E7B749 /* EFMapping */,
 				C70D5E2018DE0AE800E7B749 /* EFMappingTests */,
@@ -130,6 +137,7 @@
 			children = (
 				C7F7DA041907EBF5009E9974 /* EFMapper.h */,
 				C7F7DA051907EBF5009E9974 /* EFMapper.m */,
+				C7446A791921BD0F00321349 /* EFMapper-Subclass.h */,
 				C7F7DA071907EBFE009E9974 /* EFMapping.h */,
 				C7F7DAAF190A1C2B009E9974 /* EFMapping-Private.h */,
 				C7F7DA081907EBFE009E9974 /* EFMapping.m */,

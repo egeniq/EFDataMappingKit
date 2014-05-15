@@ -8,6 +8,7 @@
 
 #import "EFMapper.h"
 
+#import "EFMapper-Subclass.h"
 #import "EFMapping-Private.h"
 #import "EFMappingError.h"
 
