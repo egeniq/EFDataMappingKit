@@ -27,7 +27,7 @@ Documentation is available [here](http://egeniq.github.io/EFDataMappingKit/).
 Using EFDataMappingKit
 ======================
 
-Let's take this example of JSON describing an user:
+Let's take this example of JSON describing a user:
 
 ```json
 {
@@ -98,7 +98,7 @@ EFMapper *mapper = [[EFMapper alloc] init];
 
 Step 2. Define mappings
 -----------------------
-An mapping describes how a value retrieved from an external source should be mapped on an internal entity.
+A mapping describes how a value retrieved from an external source should be mapped on an internal entity.
 
 For each mapping you need to specify at least the `externalKey` and `internalKey` (or use `key` to set both the same) and you need to specify what kind of value you expect. For primitives such as `BOOL`, `int`, `CGFloat` use `NSNumber`.
 
