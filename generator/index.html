@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EFDataMappingKit Generator</title>
+
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Highlight js -->
+    <link rel="stylesheet" href="highlight/styles/xcode.css">
+    <style type="text/css" media="screen">
+    pre {
+        padding: 0px;
+        background-color: white;
+        border: 0px;
+    }
+    </style>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+      <div class="container">
+    <h1>EFDataMappingKit Generator</h1>
+    <p><em>Quickly and easily create mappings from your JSON!</em></p>
+    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<div class="alert alert-warning alert-dismissable">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <strong>Warning!</strong> This generator is still under development.
+</div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Input</h3>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label for="inputJSON" class="col-sm-2 control-label">JSON</label>
+              <div class="col-sm-10">
+                <textarea id="inputJSON" class="form-control" rows="24" >{"test":{"id":"123"},"foo":"bar", "are_you_sure":true, "amount_of_stuff":123, "my_things":["1", "2", "3"]}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputPrefix" class="col-sm-2 control-label">Class Prefix</label>
+              <div class="col-sm-2">
+                  <input id="inputPrefix" type="text" class="form-control" placeholder="XYZ">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputRoot" class="col-sm-2 control-label">Name Root Object</label>
+              <div class="col-sm-2">
+                  <input id="inputRoot" type="text" class="form-control" placeholder="Root">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputProject" class="col-sm-2 control-label">Project Name</label>
+              <div class="col-sm-4">
+                  <input id="inputProject" type="text" class="form-control" placeholder="My Project">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputUser" class="col-sm-2 control-label">Copyright Holder</label>
+              <div class="col-sm-4">
+                  <input id="inputUser" type="text" class="form-control" placeholder="My Company">
+              </div>
+            </div>
+            
+            <div class="form-group">
+           
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-primary btn-lg" onclick="generate()"><span class="glyphicon glyphicon-circle-arrow-right"></span> Generate Mappings</button>
+              </div>
+            </div>
+        </form>
+      </div>
+    </div>
+    
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Output</h3>
+
+      </div>
+      <div class="panel-body" id="output">
+      
+      <div class="output"></div>
+          <p>
+          	
+          <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download Zip Archive</button>
+ 
+      </p>
+<div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          <span class="glyphicon glyphicon-file"></span> KYKItem.h
+        </a>
+      </h4>
+    </div>
+    
+    <div class="inner">Temp output</div>
+    
+<!--
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
+        <pre><code>//
+//  KYKPage+Mappings.m
+//  Kijk
+//
+//  Created by Johan Kool on 28/4/2014.
+//  Copyright (c) 2014 SBS. All rights reserved.
+//
+
+#import "KYKPage+Mappings.h"
+
+#import "KYKSection.h"
+#import "KYKItem.h"
+
+@implementation KYKPage (Mappings)
+
++ (NSArray *)mappings {
+    return @[
+             [EFMapping mapping:^(EFMapping *m) {
+                 m.externalKey = @"id";
+                 m.internalKey = @"guid";
+                 m.internalClass = [NSString class];
+                 m.requires = [EFRequires exists];
+             }],
+             [EFMapping mapping:^(EFMapping *m) {
+                 m.key = @"title";
+                 m.internalClass = [NSString class];
+                 m.requires = [EFRequires exists];
+             }],
+             [EFMapping mapping:^(EFMapping *m) {
+                 m.key = @"type";
+                 m.transformationBlock = [self pageTypeTransformationBlock];
+                 m.internalClass = [NSNumber class];
+                 m.requires = [EFRequires exists];
+             }],
+             [EFMapping mappingForArray:^(EFMapping *m) {
+                 m.key = @"sections";
+                 m.internalClass = [KYKSection class];
+             }],
+             [EFMapping mapping:^(EFMapping *m) {
+                 m.key = @"item";
+                 m.internalClass = [KYKItem class];
+             }],
+             ];
+}
+
+@end
+
+</code></pre>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+          Collapsible Group Item #2
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+          Collapsible Group Item #3
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+-->
+
+      </div>
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    
+    <script src="highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+     <script src="generator.js"></script>
+  </body>
+</html>
