@@ -29,8 +29,8 @@
       <div class="container">
     <h1>EFDataMappingKit Generator</h1>
     <p><em>Quickly and easily create mappings from your JSON!</em></p>
-    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p class="lead">This generator takes some sample JSON output, and generates the corresponding entities and mappings that you need to use EFDataMappingKit in your project.</p>
+    <p>A more comprehensive introduction is available in the <a href="https://github.com/Egeniq/EFDataMappingKit">ReadMe</a> of the project. Complete <a href="http://egeniq.github.io/EFDataMappingKit/">documentation</a> is available too.</p>
 <div class="alert alert-warning alert-dismissable">
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
   <strong>Warning!</strong> This generator is still under development.
@@ -89,110 +89,8 @@
 
       </div>
       <div class="panel-body" id="output">
-      
-      <div class="output"></div>
-          <p>
-          	
-          <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download Zip Archive</button>
- 
-      </p>
-<div class="panel-group" id="accordion">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-          <span class="glyphicon glyphicon-file"></span> KYKItem.h
-        </a>
-      </h4>
-    </div>
-    
-    <div class="inner">Temp output</div>
-    
-<!--
-    <div id="collapseOne" class="panel-collapse collapse in">
-      <div class="panel-body">
-        <pre><code>//
-//  KYKPage+Mappings.m
-//  Kijk
-//
-//  Created by Johan Kool on 28/4/2014.
-//  Copyright (c) 2014 SBS. All rights reserved.
-//
-
-#import "KYKPage+Mappings.h"
-
-#import "KYKSection.h"
-#import "KYKItem.h"
-
-@implementation KYKPage (Mappings)
-
-+ (NSArray *)mappings {
-    return @[
-             [EFMapping mapping:^(EFMapping *m) {
-                 m.externalKey = @"id";
-                 m.internalKey = @"guid";
-                 m.internalClass = [NSString class];
-                 m.requires = [EFRequires exists];
-             }],
-             [EFMapping mapping:^(EFMapping *m) {
-                 m.key = @"title";
-                 m.internalClass = [NSString class];
-                 m.requires = [EFRequires exists];
-             }],
-             [EFMapping mapping:^(EFMapping *m) {
-                 m.key = @"type";
-                 m.transformationBlock = [self pageTypeTransformationBlock];
-                 m.internalClass = [NSNumber class];
-                 m.requires = [EFRequires exists];
-             }],
-             [EFMapping mappingForArray:^(EFMapping *m) {
-                 m.key = @"sections";
-                 m.internalClass = [KYKSection class];
-             }],
-             [EFMapping mapping:^(EFMapping *m) {
-                 m.key = @"item";
-                 m.internalClass = [KYKItem class];
-             }],
-             ];
-}
-
-@end
-
-</code></pre>
-      </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-          Collapsible Group Item #2
-        </a>
-      </h4>
-    </div>
-    <div id="collapseTwo" class="panel-collapse collapse">
-      <div class="panel-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-      </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-          Collapsible Group Item #3
-        </a>
-      </h4>
-    </div>
-    <div id="collapseThree" class="panel-collapse collapse">
-      <div class="panel-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-      </div>
-    </div>
-  </div>
-</div>
-</div>
--->
+   
+    	  <div class="output"></div>
 
       </div>
     </div>

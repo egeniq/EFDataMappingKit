@@ -1,6 +1,24 @@
 if (typeof String.prototype.toCamel !== 'function') {
     String.prototype.toCamel = function(){
-        return this.replace(/[-_]([a-z])/g, function (g) { return g[1].toUpperCase(); })
+        return this.replace(/[-_]([a-z])/g, function (g) { return g[1].toUpperCase(); });
+    };
+}
+
+if (typeof String.prototype.toSingular !== 'function') {
+    String.prototype.toSingular = function(){
+        return this.replace(/([s]$)/g, function (g) { return ""; });
+    };
+}
+
+if (typeof String.prototype.toIvarName !== 'function') {
+    String.prototype.toIvarName = function(){
+        return this.toCamel();
+    };
+}
+
+if (typeof String.prototype.toClassName !== 'function') {
+    String.prototype.toClassName = function(prefix){
+        return this.toCamel().toSingular().addPrefix(prefix);
     };
 }
 
@@ -48,12 +66,14 @@ function generate() {
     var classDescriptions = new Object;
     
     if (containsObject(json)) {
-        var camelKey = root.toCamel().addPrefix(prefix);
+        var camelKey = root.toClassName(prefix);
         classDescription(classDescriptions, prefix, camelKey, json);
     } else {
         $('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Error!</strong> ' + 'Expected a dictionary as root' + '</div>').insertBefore('.output');
         return;
     }
+    
+   //console.log(classDescriptions.keys());
     
     var files = new Object;
     
@@ -61,9 +81,22 @@ function generate() {
         addFilesForClassDescription(files, classDescriptions[key], project, date, year, user);
     }
     
+    var filePanels = "";
     for (var key in files) {
-        $('<pre><code language=\"objectivec\">'+files[key]+'</code></pre>').insertBefore('.output');
+        filePanels += "<div class=\"panel panel-default\">\
+    <div class=\"panel-heading\">\
+      <h4 class=\"panel-title\">\
+        <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse"+ key.replace(/[\.+]/g, "") +"\">\
+          <span class=\"glyphicon glyphicon-file\"></span> " + key + "\
+        </a>\
+      </h4>\
+    </div>\
+    <div id=\"collapse"+key.replace(/[\.+]/g, "")+"\" class=\"panel-collapse collapse\">\
+      <div class=\"panel-body\"><pre><code languages=\"objectivec\">" + files[key] + "</code></pre></div></div></div>";
     }
+    
+     $('<div class="panel-group" id="accordion">'+filePanels + '</div><!--<p><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download Zip Archive</button></p>-->').insertBefore('.output');
+    
     $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
     
 }
@@ -82,51 +115,67 @@ function classDescription(classDescriptions, prefix, name, json) {
     description.mappings = [];
     for (var key in json) {
         var jsonForKey = json[key];
-        if (containsObject(jsonForKey)) {
-            var camelKey = key.toCamel().addPrefix(prefix);
-            classDescription(classDescriptions, prefix, camelKey, jsonForKey);
+        if (Array.isArray(jsonForKey)) {
+            var camelKey = key.toIvarName();
+            var mapping = mappingDescription(prefix, key, camelKey, jsonForKey);
+            description.mappings.push(mapping);
             
-            var camelKey = key.toCamel();
-            var mappings = mappingsDescription(prefix, key, camelKey, jsonForKey);
-            description.mappings.push(mappings);
+            if (mapping['customClass'] == true) {
+                var nameForKey = key.toClassName(prefix);
+                classDescription(classDescriptions, prefix, nameForKey, jsonForKey[0]);
+            }
+        } else if (containsObject(jsonForKey)) {
+            var nameForKey = key.toClassName(prefix);
+            classDescription(classDescriptions, prefix, nameForKey, jsonForKey);
+            
+            var camelKey = key.toIvarName();
+            var mapping = mappingDescription(prefix, key, camelKey, jsonForKey);
+            description.mappings.push(mapping);
         } else {
-            var camelKey = key.toCamel();
-            var mappings = mappingsDescription(prefix, key, camelKey, jsonForKey);
-            description.mappings.push(mappings);
+            var camelKey = key.toIvarName();
+            var mapping = mappingDescription(prefix, key, camelKey, jsonForKey);
+            description.mappings.push(mapping);
         }
     }
-    classDescriptions[key] = description;
+    console.log("Adding description for " + name);
+    classDescriptions[name] = description;
 }
 
-function mappingsDescription(prefix, key, camelKey, json) {
+function mappingDescription(prefix, key, camelKey, json) {
     var type = typeof json;
-    var mappings = new Object;
-    mappings['internalKey'] = camelKey;
-    mappings['externalKey'] = key;
+    var mapping = new Object;
+    mapping['internalKey'] = camelKey;
+    mapping['externalKey'] = key;
     if (type == 'string') {
-        mappings['type'] = 'NSString *';
-        mappings['property'] = "copy";
-        mappings['internalClass'] = 'NSString';
-    } else if (type == 'number') {
-        mappings['type'] = 'NSNumber *';
-        mappings['property'] = "strong";
-        mappings['internalClass'] = 'NSNumber';
+        mapping['type'] = 'NSString *';
+        mapping['property'] = "copy";
+        mapping['internalClass'] = 'NSString';
+   } else if (type == 'number') {
+        mapping['type'] = 'NSNumber *';
+        mapping['property'] = "strong";
+        mapping['internalClass'] = 'NSNumber';
     } else if (type == 'boolean') {
-        mappings['type'] = 'BOOL ';
-        mappings['property'] = "assign";
-        mappings['internalClass'] = 'NSNumber';
+        mapping['type'] = 'BOOL ';
+        mapping['property'] = "assign";
+        mapping['internalClass'] = 'NSNumber';
     } else if (Array.isArray(json)) {
-        mappings['type'] = 'NSArray *';
-        mappings['property'] = "copy";
-        mappings['internalClass'] = 'NSArray';
+        var subJson = json[0];
+        var submapping = mappingDescription(prefix, key, camelKey, subJson);
+        mapping['type'] = 'NSArray *';
+        mapping['property'] = "copy";
+        mapping['collection'] = true;
+        mapping['collectionClass'] = 'NSArray';
+        mapping['internalClass'] = submapping['internalClass'];
+        mapping['customClass'] = submapping['customClass'];
     } else {
-        var className = key.toCamel().addPrefix(prefix);
-        mappings['type'] = className + ' *';
-        mappings['property'] = "strong";
-        mappings['internalClass'] = className;
+        var className = key.toClassName(prefix);
+        mapping['type'] = className + ' *';
+        mapping['property'] = "strong";
+        mapping['internalClass'] = className;
+        mapping['customClass'] = true;
     }
     
-    return mappings;
+    return mapping;
 }
 
 function addFilesForClassDescription(files, description, project, date, year, user) {
@@ -203,11 +252,20 @@ function mappingsForClassDescription(description) {
     var text = "";
     for (var i = 0; i < description.mappings.length; i++) {
         var mapping = description.mappings[i];
-        text += "             [EFMapping mapping:^(EFMapping *m) {\n\
+        if (mapping['collection'] == true) {
+            text += "             [EFMapping mapping:^(EFMapping *m) {\n\
+                 m.externalKey = @\"{externalKey}\";\n\
+                 m.internalKey = @\"{internalKey}\";\n\
+                 m.internalClass = [{internalClass} class];\n\
+                 m.collectionClass = [{collectionClass} class];\n\
+             }],\n".format({externalKey: mapping.externalKey, internalKey: mapping.internalKey, internalClass: mapping.internalClass, collectionClass:mapping.collectionClass});
+        } else {
+            text += "             [EFMapping mapping:^(EFMapping *m) {\n\
                  m.externalKey = @\"{externalKey}\";\n\
                  m.internalKey = @\"{internalKey}\";\n\
                  m.internalClass = [{internalClass} class];\n\
              }],\n".format({externalKey: mapping.externalKey, internalKey: mapping.internalKey, internalClass: mapping.internalClass});
+        }
     }
     return text;
 }
