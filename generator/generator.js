@@ -1,12 +1,16 @@
 if (typeof String.prototype.toCamel !== 'function') {
     String.prototype.toCamel = function(){
-        return this.replace(/[-_]([a-z])/g, function (g) { return g[1].toUpperCase(); });
+        return this.replace(/[-_ ]([a-z])/g, function (g) { return g[1].toUpperCase(); });
     };
 }
 
 if (typeof String.prototype.toSingular !== 'function') {
     String.prototype.toSingular = function(){
-        return this.replace(/([s]$)/g, function (g) { return ""; });
+    
+   // var singularize = require("inflection").singularize
+    return singularize(this); // => "word"
+   // this.replace(/([ies]$)/g, function (g) { return "y"; });
+       // return this.replace(/([s]$)/g, function (g) { return ""; });
     };
 }
 
@@ -18,7 +22,7 @@ if (typeof String.prototype.toIvarName !== 'function') {
 
 if (typeof String.prototype.toClassName !== 'function') {
     String.prototype.toClassName = function(prefix){
-        return this.toCamel().toSingular().addPrefix(prefix);
+        return this.toCamel().addPrefix(prefix);
     };
 }
 
@@ -41,11 +45,15 @@ if (typeof String.prototype.format !== 'function') {
     }
 }
 
+var zip = null;
+
 function generate() {
     $('div#output').html(' <div class="output"></div>');
     
     try {
-        var json = $.parseJSON($("#inputJSON").val());
+        var input = $("#inputJSON").val();
+        input.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"')
+        var json = $.parseJSON(input);
     }
     catch (exception) {
         $('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Error!</strong> ' + exception + '</div>').insertBefore('.output');
@@ -81,6 +89,8 @@ function generate() {
         addFilesForClassDescription(files, classDescriptions[key], project, date, year, user);
     }
     
+    zip = new JSZip();
+    
     var filePanels = "";
     for (var key in files) {
         filePanels += "<div class=\"panel panel-default\">\
@@ -93,12 +103,29 @@ function generate() {
     </div>\
     <div id=\"collapse"+key.replace(/[\.+]/g, "")+"\" class=\"panel-collapse collapse\">\
       <div class=\"panel-body\"><pre><code languages=\"objectivec\">" + files[key] + "</code></pre></div></div></div>";
+      
+      zip.file(key, files[key]);
     }
     
-     $('<div class="panel-group" id="accordion">'+filePanels + '</div><!--<p><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download Zip Archive</button></p>-->').insertBefore('.output');
+     $('<div class="panel-group" id="accordion">'+filePanels + '</div><p><button type="button" class="btn btn-default" onclick="downloadZip()"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download Zip Archive</button> <span class="help-block">Safari users: add the \'.zip\' extension to the downloaded file manually.</span></p>').insertBefore('.output');
     
     $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
     
+    
+}
+
+function downloadZip() {
+    if (zip == null) {
+        $('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Error!</strong> ' + 'Nothing to download' + '</div>').insertBefore('.output');
+        return;
+    }
+    var content = null;
+    if (JSZip.support.uint8array) {
+        content = zip.generate({type : "uint8array"});
+    } else {
+        content = zip.generate({type : "string"});
+    }
+    location.href="data:application/zip;base64," + zip.generate({type:"base64"});
 }
 
 function containsObject(json) {
@@ -120,8 +147,8 @@ function classDescription(classDescriptions, prefix, name, json) {
             var mapping = mappingDescription(prefix, key, camelKey, jsonForKey);
             description.mappings.push(mapping);
             
-            if (mapping['customClass'] == true) {
-                var nameForKey = key.toClassName(prefix);
+            if (mapping.customClass == true) {
+                var nameForKey = key.toSingular().toClassName(prefix);
                 classDescription(classDescriptions, prefix, nameForKey, jsonForKey[0]);
             }
         } else if (containsObject(jsonForKey)) {
@@ -144,35 +171,35 @@ function classDescription(classDescriptions, prefix, name, json) {
 function mappingDescription(prefix, key, camelKey, json) {
     var type = typeof json;
     var mapping = new Object;
-    mapping['internalKey'] = camelKey;
-    mapping['externalKey'] = key;
+    mapping.internalKey = camelKey;
+    mapping.externalKey = key;
     if (type == 'string') {
-        mapping['type'] = 'NSString *';
-        mapping['property'] = "copy";
-        mapping['internalClass'] = 'NSString';
+        mapping.type = 'NSString *';
+        mapping.property = "copy";
+        mapping.internalClass = 'NSString';
    } else if (type == 'number') {
-        mapping['type'] = 'NSNumber *';
-        mapping['property'] = "strong";
-        mapping['internalClass'] = 'NSNumber';
+        mapping.type = 'NSNumber *';
+        mapping.property = "strong";
+        mapping.internalClass = 'NSNumber';
     } else if (type == 'boolean') {
-        mapping['type'] = 'BOOL ';
-        mapping['property'] = "assign";
-        mapping['internalClass'] = 'NSNumber';
+        mapping.type = 'BOOL ';
+        mapping.property = "assign";
+        mapping.internalClass = 'NSNumber';
     } else if (Array.isArray(json)) {
         var subJson = json[0];
         var submapping = mappingDescription(prefix, key, camelKey, subJson);
-        mapping['type'] = 'NSArray *';
-        mapping['property'] = "copy";
-        mapping['collection'] = true;
-        mapping['collectionClass'] = 'NSArray';
-        mapping['internalClass'] = submapping['internalClass'];
-        mapping['customClass'] = submapping['customClass'];
+        mapping.type = 'NSArray *';
+        mapping.property = "copy";
+        mapping.collection = true;
+        mapping.collectionClass = 'NSArray';
+        mapping.internalClass = submapping.internalClass;
+        mapping.customClass = submapping.customClass;
     } else {
-        var className = key.toClassName(prefix);
-        mapping['type'] = className + ' *';
-        mapping['property'] = "strong";
-        mapping['internalClass'] = className;
-        mapping['customClass'] = true;
+        var className = key.toSingular().toClassName(prefix);
+        mapping.type = className + ' *';
+        mapping.property = "strong";
+        mapping.internalClass = className;
+        mapping.customClass = true;
     }
     
     return mapping;
@@ -252,13 +279,12 @@ function mappingsForClassDescription(description) {
     var text = "";
     for (var i = 0; i < description.mappings.length; i++) {
         var mapping = description.mappings[i];
-        if (mapping['collection'] == true) {
-            text += "             [EFMapping mapping:^(EFMapping *m) {\n\
+        if (mapping.collection == true) {
+            text += "             [EFMapping mappingForArray:^(EFMapping *m) {\n\
                  m.externalKey = @\"{externalKey}\";\n\
                  m.internalKey = @\"{internalKey}\";\n\
                  m.internalClass = [{internalClass} class];\n\
-                 m.collectionClass = [{collectionClass} class];\n\
-             }],\n".format({externalKey: mapping.externalKey, internalKey: mapping.internalKey, internalClass: mapping.internalClass, collectionClass:mapping.collectionClass});
+             }],\n".format({externalKey: mapping.externalKey, internalKey: mapping.internalKey, internalClass: mapping.internalClass});
         } else {
             text += "             [EFMapping mapping:^(EFMapping *m) {\n\
                  m.externalKey = @\"{externalKey}\";\n\

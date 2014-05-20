@@ -45,7 +45,7 @@
             <div class="form-group">
               <label for="inputJSON" class="col-sm-2 control-label">JSON</label>
               <div class="col-sm-10">
-                <textarea id="inputJSON" class="form-control" rows="24" >{"test":{"id":"123"},"foo":"bar", "are_you_sure":true, "amount_of_stuff":123, "my_things":["1", "2", "3"]}</textarea>
+                <textarea id="inputJSON" class="form-control" rows="24" autocorrect="off" autocapitalize="off" spellcheck="false">{"test":{"id":"123"},"foo":"bar", "are_you_sure":true, "amount_of_stuff":123, "my_things":[{"id":"1"}, {"id":"2"}, {"id":"3"}]}</textarea>
               </div>
             </div>
             <div class="form-group">
@@ -102,6 +102,10 @@
     <script src="highlight/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     
+    <script src="inflection/inflection.js"></script>
+     <script src="jszip/FileSaver.js"></script>
+   <script src="jszip/jszip.min.js"></script>
+   
      <script src="generator.js"></script>
   </body>
 </html>
