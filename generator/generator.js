@@ -102,7 +102,7 @@ function generate() {
       </h4>\
     </div>\
     <div id=\"collapse"+key.replace(/[\.+]/g, "")+"\" class=\"panel-collapse collapse\">\
-      <div class=\"panel-body\"><pre><code languages=\"objectivec\">" + files[key] + "</code></pre></div></div></div>";
+      <div class=\"panel-body\"><pre><code languages=\"objectivec\">" + files[key].replace("<", "&lt;").replace(">", "&gt;") + "</code></pre></div></div></div>";
       
       zip.file(key, files[key]);
     }
@@ -140,6 +140,7 @@ function classDescription(classDescriptions, prefix, name, json) {
     var description = new Object;
     description.name = name;
     description.mappings = [];
+    description.customClasses = [];
     for (var key in json) {
         var jsonForKey = json[key];
         if (Array.isArray(jsonForKey)) {
@@ -148,6 +149,7 @@ function classDescription(classDescriptions, prefix, name, json) {
             description.mappings.push(mapping);
             
             if (mapping.customClass == true) {
+                description.customClasses.push(mapping.internalClass);
                 var nameForKey = key.toSingular().toClassName(prefix);
                 classDescription(classDescriptions, prefix, nameForKey, jsonForKey[0]);
             }
@@ -158,10 +160,16 @@ function classDescription(classDescriptions, prefix, name, json) {
             var camelKey = key.toIvarName();
             var mapping = mappingDescription(prefix, key, camelKey, jsonForKey);
             description.mappings.push(mapping);
+            if (mapping.customClass == true) {
+                description.customClasses.push(mapping.internalClass);
+            }
         } else {
             var camelKey = key.toIvarName();
             var mapping = mappingDescription(prefix, key, camelKey, jsonForKey);
             description.mappings.push(mapping);
+            if (mapping.customClass == true) {
+                description.customClasses.push(mapping.internalClass);
+            }
         }
     }
     console.log("Adding description for " + name);
@@ -221,13 +229,28 @@ function interfaceForClassDescription(description, project, date, year, user) {
 // Copyright (c) {year} {user}. All rights reserved.\n\
 //\n\
 \n\
+#import <Foundation/Foundation.h>\n\
+\n\
+{classDeclarations}\
 @interface {name} : NSObject\n\
 \n\
 \{properties}\n\
 @end\n\
 \n\
 ";
-    return text.format({name: description.name, project: project, date: date, year: year, user: user, properties: propertiesForClassDescription(description)});
+    return text.format({name: description.name, project: project, date: date, year: year, user: user, classDeclarations: classDeclarationsForClassDescription(description), properties: propertiesForClassDescription(description)});
+}
+
+function classDeclarationsForClassDescription(description) {
+    var text = "";
+    for (var i = 0; i < description.customClasses.length; i++) {
+        var className = description.customClasses[i];
+        text += "@class {className};\n".format({className: className});
+    }
+    if (description.customClasses.length > 0) {
+        text += "\n";
+    }
+    return text;
 }
 
 function propertiesForClassDescription(description) {
@@ -248,6 +271,8 @@ function implementationForClassDescription(description, project, date, year, use
 // Copyright (c) {year} {user}. All rights reserved.\n\
 //\n\
 \n\
+#import \"{name}.h\"\n\
+\n\
 @implementation {name}\n\
 \n\
 @end\n\
@@ -264,6 +289,8 @@ function interfaceMappingsForClassDescription(description, project, date, year, 
 // Created by EFDataMappingKit Generator on {date}.\n\
 // Copyright (c) {year} {user}. All rights reserved.\n\
 //\n\
+\n\
+#import \"{name}.h\"\n\
 \n\
 @interface {name} (Mappings)\n\
 \n\
@@ -305,6 +332,11 @@ function implementationMappingsForClassDescription(description, project, date, y
 // Copyright (c) {year} {user}. All rights reserved.\n\
 //\n\
 \n\
+#import \"{name}+Mappings.h\"\n\
+\n\
+{imports}\
+#import <EFDataMappingKit/EFDataMappingKit.h>\n\
+\n\
 @implementation {name} (Mappings)\n\
 \n\
 + (NSArray *)mappings {\n\
@@ -316,6 +348,15 @@ function implementationMappingsForClassDescription(description, project, date, y
 @end\n\
 \n\
 ";
-    return text.format({name: description.name, project: project, date: date, year: year, user: user, mappings: mappingsForClassDescription(description)});
+    return text.format({name: description.name, project: project, date: date, year: year, user: user, imports: importsForClassDescription(description), mappings: mappingsForClassDescription(description)});
+}
+
+function importsForClassDescription(description) {
+    var text = "";
+    for (var i = 0; i < description.customClasses.length; i++) {
+        var className = description.customClasses[i];
+        text += "#import \"{className}.h\"\n".format({className: className});
+    }
+    return text;
 }
 
