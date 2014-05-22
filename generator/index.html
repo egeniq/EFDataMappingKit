@@ -1,111 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EFDataMappingKit Generator</title>
-
-    <!-- Bootstrap -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Highlight js -->
-    <link rel="stylesheet" href="highlight/styles/xcode.css">
-    <style type="text/css" media="screen">
-    pre {
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+            EFDataMappingKit Generator
+        </title><!-- Bootstrap -->
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"><!-- Highlight js -->
+        <link rel="stylesheet" href="highlight/styles/xcode.css" type="text/css">
+        <style type="text/css" media="screen">
+pre {
         padding: 0px;
         background-color: white;
         border: 0px;
-    }
-    </style>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
+        }
+        </style><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body>
-      <div class="container">
-    <h1>EFDataMappingKit Generator</h1>
-    <p><em>Quickly and easily create mappings from your JSON!</em></p>
-    <p class="lead">This generator takes some sample JSON output, and generates the corresponding entities and mappings that you need to use EFDataMappingKit in your project.</p>
-    <p>A more comprehensive introduction is available in the <a href="https://github.com/Egeniq/EFDataMappingKit">ReadMe</a> of the project. Complete <a href="http://egeniq.github.io/EFDataMappingKit/">documentation</a> is available too.</p>
-<div class="alert alert-warning alert-dismissable">
-  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-  <strong>Warning!</strong> This generator is still under development.
-</div>
+    </head>
+    <body>
+        <div class="container">
+            <h1>
+                EFDataMappingKit Generator
+            </h1>
+            <p>
+                <em>Quickly and easily create mappings from your JSON!</em>
+            </p>
+            <p class="lead">
+                This generator takes some sample JSON output, and generates the corresponding entities and mappings that you need to use EFDataMappingKit in your project.
+            </p>
+            <p>
+                A more comprehensive introduction is available in the <a href="https://github.com/Egeniq/EFDataMappingKit">ReadMe</a> of the project. Complete <a href="http://egeniq.github.io/EFDataMappingKit/">documentation</a> is available too.
+            </p>
+            <div class="alert alert-warning alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button> <strong>Warning!</strong> This generator is still under development.
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Input
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="inputJSON" class="col-sm-2 control-label">JSON</label>
+                            <div class="col-sm-10">
+                                <textarea id="inputJSON" class="form-control" rows="24" autocorrect="off" autocapitalize="off" spellcheck="false">
+{"test":{"id":"123"},"foo":"bar", "are_you_sure":true, "amount_of_stuff":123, "my_things":[{"id":"1"}, {"id":"2"}, {"id":"3"}]}
+</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPrefix" class="col-sm-2 control-label">Class Prefix</label>
+                            <div class="col-sm-2">
+                                <input id="inputPrefix" type="text" class="form-control" placeholder="XYZ">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputRoot" class="col-sm-2 control-label">Name Root Object</label>
+                            <div class="col-sm-2">
+                                <input id="inputRoot" type="text" class="form-control" placeholder="Root">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputProject" class="col-sm-2 control-label">Project Name</label>
+                            <div class="col-sm-4">
+                                <input id="inputProject" type="text" class="form-control" placeholder="My Project">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputUser" class="col-sm-2 control-label">Copyright Holder</label>
+                            <div class="col-sm-4">
+                                <input id="inputUser" type="text" class="form-control" placeholder="My Company">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="generate()">Generate Mappings</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Output
+                    </h3>
+                </div>
+                <div class="panel-body" id="output">
+                    <div class="output"></div>
+                </div>
+            </div>
+        </div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script> 
 
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Input</h3>
-      </div>
-      <div class="panel-body">
-        <form class="form-horizontal" role="form">
-            <div class="form-group">
-              <label for="inputJSON" class="col-sm-2 control-label">JSON</label>
-              <div class="col-sm-10">
-                <textarea id="inputJSON" class="form-control" rows="24" autocorrect="off" autocapitalize="off" spellcheck="false">{"test":{"id":"123"},"foo":"bar", "are_you_sure":true, "amount_of_stuff":123, "my_things":[{"id":"1"}, {"id":"2"}, {"id":"3"}]}</textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputPrefix" class="col-sm-2 control-label">Class Prefix</label>
-              <div class="col-sm-2">
-                  <input id="inputPrefix" type="text" class="form-control" placeholder="XYZ">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputRoot" class="col-sm-2 control-label">Name Root Object</label>
-              <div class="col-sm-2">
-                  <input id="inputRoot" type="text" class="form-control" placeholder="Root">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputProject" class="col-sm-2 control-label">Project Name</label>
-              <div class="col-sm-4">
-                  <input id="inputProject" type="text" class="form-control" placeholder="My Project">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputUser" class="col-sm-2 control-label">Copyright Holder</label>
-              <div class="col-sm-4">
-                  <input id="inputUser" type="text" class="form-control" placeholder="My Company">
-              </div>
-            </div>
-            
-            <div class="form-group">
-           
-              <div class="col-sm-offset-2 col-sm-10">
-                <button type="button" class="btn btn-primary btn-lg" onclick="generate()"><span class="glyphicon glyphicon-circle-arrow-right"></span> Generate Mappings</button>
-              </div>
-            </div>
-        </form>
-      </div>
-    </div>
-    
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Output</h3>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
 
-      </div>
-      <div class="panel-body" id="output">
-   
-    	  <div class="output"></div>
+<!-- External code -->
+<script src="highlight/highlight.pack.js" type="text/javascript"></script>
+<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+<script src="inflection/inflection.js" type="text/javascript"></script>
+<script src="jszip/jszip.min.js" type="text/javascript"></script>
 
-      </div>
-    </div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    
-    <script src="highlight/highlight.pack.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-    
-    <script src="inflection/inflection.js"></script>
-     <script src="jszip/FileSaver.js"></script>
-   <script src="jszip/jszip.min.js"></script>
-   
-     <script src="generator.js"></script>
-  </body>
+<!-- Our code -->
+<script src="generator.js" type="text/javascript"></script>
+    </body>
 </html>
