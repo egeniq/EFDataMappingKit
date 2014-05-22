@@ -1,3 +1,4 @@
+//!Helper functions on String
 if (typeof String.prototype.toCamel !== 'function') {
     String.prototype.toCamel = function(){
         return this.replace(/[-_ ]([a-z])/g, function (g) { return g[1].toUpperCase(); });
@@ -41,17 +42,21 @@ if (typeof String.prototype.format !== 'function') {
     }
 }
 
+//!Global variable
 var zip = null;
 
+//!Main entry functions
 function generate() {
-    $('div#output').html(' <div class="output"></div>');
+    // Clear previous output
+    $('div#output').html('<div class="output"></div>');
     
+    // Gather input
     try {
         var input = $("#inputJSON").val();
         var json = $.parseJSON(input);
     }
     catch (exception) {
-        $('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Error!</strong> ' + exception + '</div>').insertBefore('.output');
+        showError(exception);
         return;
     }
     
@@ -66,24 +71,31 @@ function generate() {
     var year = today.getFullYear();
     var user = $("#inputUser").val();
     
+    // Create class descriptions
     var classDescriptions = new Object;
-    
     if (containsObject(json)) {
         var camelKey = root.toClassName(prefix);
         classDescription(classDescriptions, prefix, camelKey, json);
     } else {
-        $('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Error!</strong> ' + 'Expected a dictionary as root' + '</div>').insertBefore('.output');
+        showError("Expected a dictionary as root");
         return;
     }
      
+    // Create files
     var files = new Object;
-    
+    files[prefix + "Mapper.h"] = interfaceMapper(prefix, project, date, year, user);
+    files[prefix + "Mapper.m"] = implementationMapperForClassDescriptions(classDescriptions, prefix, project, date, year, user);
     for (var key in classDescriptions) {
         addFilesForClassDescription(files, classDescriptions[key], project, date, year, user);
     }
     
+    // Create zip
     zip = new JSZip();
+    for (var key in files) {
+        zip.file(key, files[key]);
+    }
     
+    // Create HTML output
     var filePanels = "";
     for (var key in files) {
         filePanels += "<div class=\"panel panel-default\">\
@@ -96,22 +108,26 @@ function generate() {
     </div>\
     <div id=\"collapse"+key.replace(/[\.+]/g, "")+"\" class=\"panel-collapse collapse\">\
       <div class=\"panel-body\"><pre><code languages=\"objectivec\">" + files[key].replace("<", "&lt;").replace(">", "&gt;") + "</code></pre></div></div></div>";
-      
-        zip.file(key, files[key]);
     }
     
-     $('<div class="panel-group" id="accordion">'+filePanels + '</div><p><button type="button" class="btn btn-default" onclick="downloadZip()"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download Zip Archive</button> <span class="help-block">Safari users: add the \'.zip\' extension to the downloaded file manually.</span></p>').insertBefore('.output');
+    // Download zip button
+    $('<div class="panel-group" id="accordion">'+filePanels + '</div><p><button type="button" class="btn btn-default" onclick="downloadZip()"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download Zip Archive</button> <span class="help-block">Safari users: add the \'.zip\' extension to the downloaded file manually.</span></p>').insertBefore('.output');
     
+    // Run code highlighter
     $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
 }
 
 function downloadZip() {
     if (zip == null) {
-        $('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Error!</strong> ' + 'Nothing to download' + '</div>').insertBefore('.output');
+        showError('Nothing to download');
         return;
     }
-
     location.href="data:application/zip;base64," + zip.generate({type:"base64"});
+}
+
+//!Helper functions
+function showError(error) {
+    $('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Error!</strong> ' + error + '</div>').insertBefore('.output');
 }
 
 function containsObject(json) {
@@ -122,6 +138,7 @@ function containsObject(json) {
     }
 }
 
+//!Descriptions & mappings
 function classDescription(classDescriptions, prefix, name, json) {
     var description = new Object;
     description.name = name;
@@ -158,7 +175,6 @@ function classDescription(classDescriptions, prefix, name, json) {
             }
         }
     }
-    console.log("Adding description for " + name);
     classDescriptions[name] = description;
 }
 
@@ -195,10 +211,10 @@ function mappingDescription(prefix, key, camelKey, json) {
         mapping.internalClass = className;
         mapping.customClass = true;
     }
-    
     return mapping;
 }
 
+//!File generation
 function addFilesForClassDescription(files, description, project, date, year, user) {
     files[description.name + ".h"] = interfaceForClassDescription(description, project, date, year, user);
     files[description.name + ".m"] = implementationForClassDescription(description, project, date, year, user);
@@ -206,6 +222,7 @@ function addFilesForClassDescription(files, description, project, date, year, us
     files[description.name + "+Mappings.m"] = implementationMappingsForClassDescription(description, project, date, year, user);
 }
 
+//!Entity templates
 function interfaceForClassDescription(description, project, date, year, user) {
     var text = "//\n\
 // {name}.h\n\
@@ -267,6 +284,7 @@ function implementationForClassDescription(description, project, date, year, use
     return text.format({name: description.name, project: project, date: date, year: year, user: user});
 }
 
+//!Mappings templates
 function interfaceMappingsForClassDescription(description, project, date, year, user) {
     var text = "//\n\
 // {name}+Mappings.h\n\
@@ -346,3 +364,67 @@ function importsForClassDescription(description) {
     return text;
 }
 
+//!Mapper template
+function interfaceMapper(prefix, project, date, year, user) {
+    var text = "//\n\
+// {prefix}Mapper.h\n\
+// {project}\n\
+//\n\
+// Created by EFDataMappingKit Generator on {date}.\n\
+// Copyright (c) {year} {user}. All rights reserved.\n\
+//\n\
+\n\
+#import <EFDataMappingKit/EFDataMappingKit.h>\n\
+\n\
+@interface {prefix}Mapper : EFMapper\n\
+\n\
+@end\n\
+\n\
+";
+    return text.format({prefix: prefix, project: project, date: date, year: year, user: user});
+}
+
+function implementationMapperForClassDescriptions(descriptions, prefix, project, date, year, user) {
+    var text = "//\n\
+// {prefix}Mapper.m\n\
+// {project}\n\
+//\n\
+// Created by EFDataMappingKit Generator on {date}.\n\
+// Copyright (c) {year} {user}. All rights reserved.\n\
+//\n\
+\n\
+#import \"{prefix}Mapper.h\"\n\
+\n\
+{imports}\
+\n\
+@implementation {prefix}Mapper\n\
+\n\
+- (id)init {\n\
+    self = [super init];\n\
+    if (self) {\n\
+{mappingRegistrations}\
+    }\n\
+    return self;\n\
+}\n\
+\n\
+@end\n\
+\n\
+";
+    return text.format({prefix: prefix, project: project, date: date, year: year, user: user, imports: importsForClassDescriptions(descriptions), mappingRegistrations: mappingRegistrationsForClassDescriptions(descriptions)});
+}
+
+function importsForClassDescriptions(descriptions) {
+    var text = "";
+    for (var description in descriptions) {
+        text += "#import \"{className}+Mappings.h\"\n".format({className: description});
+    }
+    return text;
+}
+
+function mappingRegistrationsForClassDescriptions(descriptions) {
+    var text = "";
+    for (var description in descriptions) {
+        text += "        [self registerMappings:[{className} mappings] forClass:[{className} class]];\n".format({className: description});
+    }
+    return text;
+}
