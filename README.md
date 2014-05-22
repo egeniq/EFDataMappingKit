@@ -24,6 +24,12 @@ Documentation
 Documentation is available [here](http://egeniq.github.io/EFDataMappingKit/).
 
 
+Code Generator
+==============
+
+Still in early development, but a nice little code generator is available [here](http://egeniq.github.io/EFDataMappingKit/generator/). It takes your JSON and creates basic mappings for you.
+
+
 Using EFDataMappingKit
 ======================
 
@@ -170,7 +176,7 @@ Use `formatter`, `transformer` and `transformBlock` if you need make some change
 Step 3. Register mappings
 -------------------------
 
-You register an array of EFMapping objects for each entity class.
+You register an array of `EFMapping` objects for each entity class.
 
 ```objective-c
 EFMapper *mapper = [EFMapper sharedInstance];
@@ -181,7 +187,9 @@ EFMapper *mapper = [EFMapper sharedInstance];
 
 Step 4. Apply values
 --------------------
-You apply your values either to an already existing instance. Before applying the values, the mapper will validate the values and let you know about any issues.
+You apply your values either to an already existing instance or you can ask for a new object to be initialized. Before applying the values, the mapper will validate the values and let you know about any issues.
+
+To apply to an existing object:
 
 ```objective-c
 EFMapper *mapper = [EFMapper sharedInstance];
@@ -194,7 +202,7 @@ if (![mapper setValues:incomingValues onObject:existingObject error:&error]) {
 }
 ```
 
-Or you can ask for a new object to be initialized:
+To create a new object:
 
 ```objective-c
 EFMapper *mapper = [EFMapper sharedInstance];
