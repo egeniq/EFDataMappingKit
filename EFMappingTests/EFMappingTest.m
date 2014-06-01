@@ -10,9 +10,17 @@
 
 #import "EFDataMappingKit.h"
 
+typedef NS_ENUM(int, EFSampleType) {
+    EFSampleTypeUnknown,
+    EFSampleTypeFoo,
+    EFSampleTypeBar,
+    EFSampleTypeBaz
+};
+
 @interface EFSample : NSObject
 
 @property (nonatomic, copy) NSString *guid;
+@property (nonatomic, assign) EFSampleType type;
 @property (nonatomic, assign) NSInteger myPoints;
 @property (nonatomic, strong) NSDate *creationDate;
 @property (nonatomic, strong) EFSample *sample;
@@ -209,6 +217,53 @@
 \t\t\t\t0: Encountered 1 validation error in EFSample:\n\
 \t\t\t\t\tguid: Did not expect value (5) of class __NSCFNumber for key guid but a NSString instance";
     XCTAssertEqualObjects(EFPrettyMappingError(error), expectedErrorMsg, @"Pretty print error differs");
+}
+
+- (void)testDateFormatting {
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m){m.internalClass = [NSString class]; m.externalKey = @"id"; m.internalKey = @"guid"; m.requires = [EFRequires exists];}],
+                               [EFMapping mapping:^(EFMapping *m){m.internalClass = [NSDate class]; m.externalKey = @"created_at"; m.internalKey = @"creationDate"; m.formatter = [NSDateFormatter ef_rfc3339DateFormatter];}]
+                               ] forClass:[EFSample class]];
+
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1", @"created_at": @"2014-04-01T09:34:45Z"} error:&error];
+    XCTAssertNotNil(sample, @"Expected values to be valid but found error %@", EFPrettyMappingError(error));
+    XCTAssertTrue([sample.creationDate isKindOfClass:[NSDate class]], @"Expected a date");
+
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    calendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+
+    NSDateComponents *components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit|NSTimeZoneCalendarUnit fromDate:sample.creationDate];
+    XCTAssertEqual(components.year, 2014, @"Expected year 2014");
+    XCTAssertEqual(components.month, 4, @"Expected month 4");
+    XCTAssertEqual(components.day, 1, @"Expected day 1");
+    XCTAssertEqual(components.hour, 9, @"Expected hour 9");
+    XCTAssertEqual(components.minute, 34, @"Expected minute 34");
+    XCTAssertEqual(components.second, 45, @"Expected second 45");
+    XCTAssertEqual([components.timeZone secondsFromGMT], 0, @"Expected GMT time zone");
+}
+
+- (void)testEnumMapping {
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m){
+                                    m.internalClass = [NSString class];
+                                    m.externalKey = @"id";
+                                    m.internalKey = @"guid";
+                                    m.requires = [EFRequires exists];
+                                }],
+                               [EFMapping mapping:^(EFMapping *m){
+                                    m.internalClass = [NSNumber class];
+                                    m.key = @"type";
+                                    m.transformer = [EFEnumTransformer transformerWithEnumMapping:@{@(EFSampleTypeFoo): @"foo",
+                                                                                                    @(EFSampleTypeBar): @"bar",
+                                                                                                    @(EFSampleTypeBaz): @"baz"}];
+                                }]
+                               ] forClass:[EFSample class]];
+
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1", @"type": @"foo"} error:&error];
+    XCTAssertNotNil(sample, @"Expected values to be valid but found error %@", EFPrettyMappingError(error));
+    XCTAssertEqual(sample.type, EFSampleTypeFoo, @"Expected type to be foo");
 }
 
 @end

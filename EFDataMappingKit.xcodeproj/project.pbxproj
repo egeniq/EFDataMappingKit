@@ -16,6 +16,7 @@
 		C70D5E2518DE0AE900E7B749 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C70D5E2318DE0AE900E7B749 /* InfoPlist.strings */; };
 		C70D5E3418DE0B3A00E7B749 /* EFMappingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C70D5E3318DE0B3A00E7B749 /* EFMappingTest.m */; };
 		C788E2D5193B84BA001F140F /* NSDateFormatter+EFMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = C788E2D4193B84BA001F140F /* NSDateFormatter+EFMapping.m */; };
+		C788E2D8193B8C38001F140F /* EFEnumTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = C788E2D7193B8C38001F140F /* EFEnumTransformer.m */; };
 		C7E5453718EA668700B56C3E /* EFAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E5452F18EA668700B56C3E /* EFAppDelegate.m */; };
 		C7E5453918EA668700B56C3E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7E5453318EA668700B56C3E /* InfoPlist.strings */; };
 		C7E5453A18EA668700B56C3E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7E5453518EA668700B56C3E /* Images.xcassets */; };
@@ -57,6 +58,8 @@
 		C778B35918DF32EC00FFB5F2 /* EFDataMappingKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = EFDataMappingKit.podspec; sourceTree = "<group>"; };
 		C788E2D3193B84BA001F140F /* NSDateFormatter+EFMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+EFMapping.h"; sourceTree = "<group>"; };
 		C788E2D4193B84BA001F140F /* NSDateFormatter+EFMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+EFMapping.m"; sourceTree = "<group>"; };
+		C788E2D6193B8C38001F140F /* EFEnumTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFEnumTransformer.h; sourceTree = "<group>"; };
+		C788E2D7193B8C38001F140F /* EFEnumTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFEnumTransformer.m; sourceTree = "<group>"; };
 		C7E5452E18EA668700B56C3E /* EFAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFAppDelegate.h; sourceTree = "<group>"; };
 		C7E5452F18EA668700B56C3E /* EFAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFAppDelegate.m; sourceTree = "<group>"; };
 		C7E5453018EA668700B56C3E /* EFDataMappingKit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "EFDataMappingKit-Info.plist"; sourceTree = "<group>"; };
@@ -150,6 +153,8 @@
 				C7F7DA0B1907EC12009E9974 /* EFRequires.m */,
 				C788E2D3193B84BA001F140F /* NSDateFormatter+EFMapping.h */,
 				C788E2D4193B84BA001F140F /* NSDateFormatter+EFMapping.m */,
+				C788E2D6193B8C38001F140F /* EFEnumTransformer.h */,
+				C788E2D7193B8C38001F140F /* EFEnumTransformer.m */,
 				C7F7DA0D1907EC2B009E9974 /* EFDataMappingKit.h */,
 			);
 			path = EFMapping;
@@ -300,6 +305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7F7DA121907EDB1009E9974 /* EFMappingError.m in Sources */,
+				C788E2D8193B8C38001F140F /* EFEnumTransformer.m in Sources */,
 				C788E2D5193B84BA001F140F /* NSDateFormatter+EFMapping.m in Sources */,
 				C7E5453B18EA668700B56C3E /* main.m in Sources */,
 				C7F7DA061907EBF5009E9974 /* EFMapper.m in Sources */,

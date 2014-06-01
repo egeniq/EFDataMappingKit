@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ *  Often needed date formatters
+ */
 @interface NSDateFormatter (EFMapping)
 
 /**
@@ -15,6 +18,6 @@
  *
  *  @return RFC 3339 Date formatter
  */
-+ (NSDateFormatter *)ef_rfc3339DateFormatter;
++ (instancetype)ef_rfc3339DateFormatter;
 
 @end

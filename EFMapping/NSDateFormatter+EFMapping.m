@@ -11,7 +11,7 @@
 @implementation NSDateFormatter (EFMapping)
 
 + (NSDateFormatter *)ef_rfc3339DateFormatter {
-    NSDateFormatter *rfc3339DateFormatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *rfc3339DateFormatter = [[[self class] alloc] init];
     NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
 
     [rfc3339DateFormatter setLocale:enUSPOSIXLocale];
