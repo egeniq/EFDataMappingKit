@@ -82,13 +82,6 @@
         m.externalKey = @"id";
         m.internalKey = @"guid";
         m.requires = [EFRequires exists];
-        m.transformationBlock = ^id(id value, BOOL reverse) {
-            if (reverse) {
-                return [(NSURL *)value absoluteString];
-            } else {
-                return [NSURL URLWithString:(NSString *)value];
-            }
-        };
     }]] forClass:[EFSample class]];
 
     NSError *error;
@@ -199,6 +192,23 @@
     XCTAssertTrue([[EFRequires either:array or:[EFRequires equalTo:@10]] evaluateForValue:@3], @"Value or");
     XCTAssertTrue([[EFRequires either:array or:[EFRequires equalTo:@10]] evaluateForValue:@10], @"Value or");
     XCTAssertFalse([[EFRequires either:array or:[EFRequires equalTo:@10]] evaluateForValue:@1], @"Value or");
+}
+
+- (void)testPrettyErrors {
+    EFMapper *mapper = [[EFMapper alloc] init];
+    [mapper registerMappings:@[[EFMapping mapping:^(EFMapping *m){m.internalClass = [NSString class]; m.externalKey = @"id"; m.internalKey = @"guid"; m.requires = [EFRequires exists];}],
+                               [EFMapping mappingForArrayOfClass:[EFSample class] externalKey:@"children" internalKey:@"relatedSamples"]] forClass:[EFSample class]];
+
+    NSError *error;
+    EFSample *sample = [mapper objectOfClass:[EFSample class] withValues:@{@"id": @"1", @"children": @[@{@"id": @"2"}, @{@"id": @3, @"children": @[@{@"id": @"4"}, @{@"id": @5}]}]} error:&error];
+    NSString *expectedErrorMsg = @"Encountered 1 validation error in EFSample:\n\
+\trelatedSamples: Encountered 1 validation error in array for key relatedSamples:\n\
+\t\t0: Encountered 2 validation errors in EFSample:\n\
+\t\t\tguid: Did not expect value (3) of class __NSCFNumber for key guid but a NSString instance\n\
+\t\t\trelatedSamples: Encountered 1 validation error in array for key relatedSamples:\n\
+\t\t\t\t0: Encountered 1 validation error in EFSample:\n\
+\t\t\t\t\tguid: Did not expect value (5) of class __NSCFNumber for key guid but a NSString instance";
+    XCTAssertEqualObjects(EFPrettyMappingError(error), expectedErrorMsg, @"Pretty print error differs");
 }
 
 @end
