@@ -11,27 +11,29 @@
 NSString * const EFMappingErrorDomain = @"EFMappingErrorDomain";
 NSString * const EFMappingErrorValidationErrorsKey = @"validationErrors";
 
-NSString* EFPrettyMappingError(NSError *error) {
+NSString* EFPrettyMappingErrorWithIndentation(NSError *error, NSUInteger indentationLevel) {
     if ([error.domain isEqualToString:EFMappingErrorDomain]) {
         NSMutableString *string = [NSMutableString string];
-        if (error.code == EFMappingInvalidValues) {
-            [string appendFormat:@"%@:", error.userInfo[NSLocalizedDescriptionKey]];
-            id errors = error.userInfo[EFMappingErrorValidationErrorsKey];
-            if ([errors isKindOfClass:[NSArray class]]) {
-                [errors enumerateObjectsUsingBlock:^(NSError *subError, NSUInteger idx, BOOL *stop) {
-                    [string appendFormat:@"\n\t- %lu: %@", (unsigned long)idx, subError.userInfo[NSLocalizedDescriptionKey]];
-                }];
-            } else if ([errors isKindOfClass:[NSDictionary class]]) {
-                [errors enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSError *subError, BOOL *stop) {
-                    [string appendFormat:@"\n\t- %@: %@", key, subError.userInfo[NSLocalizedDescriptionKey]];
-                }];
-            }
-        } else {
-            // Do some recursive stuff here!
+        [string appendString:error.userInfo[NSLocalizedDescriptionKey]];
+        id errors = error.userInfo[EFMappingErrorValidationErrorsKey];
+        NSString *tabs = [@"\n" stringByPaddingToLength:indentationLevel + 2 withString:@"\t" startingAtIndex:0];
+        if ([errors isKindOfClass:[NSArray class]]) {
+            [string appendString:@":"];
+            [errors enumerateObjectsUsingBlock:^(NSError *subError, NSUInteger idx, BOOL *stop) {
+                [string appendFormat:@"%@%lu: %@", tabs, (unsigned long)idx, EFPrettyMappingErrorWithIndentation(subError, indentationLevel + 1)];
+            }];
+        } else if ([errors isKindOfClass:[NSDictionary class]]) {
+            [string appendString:@":"];
+            [errors enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSError *subError, BOOL *stop) {
+                [string appendFormat:@"%@%@: %@", tabs, key, EFPrettyMappingErrorWithIndentation(subError, indentationLevel + 1)];
+            }];
         }
-        [string appendString:@"\n"];
         return string;
     } else {
         return [error description];
     }
+}
+
+NSString* EFPrettyMappingError(NSError *error) {
+    return EFPrettyMappingErrorWithIndentation(error, 0);
 }

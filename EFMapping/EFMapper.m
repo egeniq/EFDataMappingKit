@@ -177,7 +177,7 @@
                     }
 
                     if ([errorsInArray count] > 0) {
-                        NSString *description = [NSString stringWithFormat:@"Encountered %lu validation error(s) in array for key %@", (unsigned long)[errorsInArray count], mapping.internalKey];
+                        NSString *description = [NSString stringWithFormat:@"Encountered %lu validation error%@ in array for key %@", (unsigned long)[errorsInArray count], [errorsInArray count] == 1 ? @"" : @"s", mapping.internalKey];
                         NSError *validationError = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description, EFMappingErrorValidationErrorsKey: errorsInArray}];
                         errors[mapping.internalKey] = validationError;
                     } else {
@@ -218,7 +218,7 @@
                     }];
 
                     if ([errorsInDictionary count] > 0) {
-                        NSString *description = [NSString stringWithFormat:@"Encountered %lu validation error(s) in dictionary for key %@", (unsigned long)[errorsInDictionary count], mapping.internalKey];
+                        NSString *description = [NSString stringWithFormat:@"Encountered %lu validation error%@ in dictionary for key %@", (unsigned long)[errorsInDictionary count], [errorsInDictionary count] == 1 ? @"" : @"s", mapping.internalKey];
                         NSError *validationError = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description, EFMappingErrorValidationErrorsKey: errorsInDictionary}];
                         errors[mapping.internalKey] = validationError;
                     } else {
@@ -265,7 +265,7 @@
 
     if ([errors count] > 0) {
         if (error != NULL) {
-            NSString *description = [NSString stringWithFormat:NSLocalizedString(@"Encountered %d validation error(s) in %@", @""), [errors count], NSStringFromClass(aClass)];
+            NSString *description = [NSString stringWithFormat:NSLocalizedString(@"Encountered %d validation error%@ in %@", @""), [errors count], [errors count] == 1 ? @"" : @"s", NSStringFromClass(aClass)];
             *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingInvalidValues userInfo:@{NSLocalizedDescriptionKey: description, EFMappingErrorValidationErrorsKey: errors}];
         }
         return NO;
@@ -409,7 +409,7 @@
     if (isCollection) {
         if (value && ![value isKindOfClass:mapping.collectionClass]) {
             if (error != NULL) {
-                NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but %@ instance", value, NSStringFromClass([value class]), mapping.internalKey, NSStringFromClass(mapping.collectionClass)];
+                NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but a %@ instance", value, NSStringFromClass([value class]), mapping.internalKey, NSStringFromClass(mapping.collectionClass)];
                 *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description}];
             }
             return NO;
@@ -424,7 +424,7 @@
                 }
             } else {
                 if (error != NULL) {
-                    NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but %@ instance%@", value, NSStringFromClass([value class]), mapping.internalKey, NSStringFromClass(mapping.internalClass), [self mappingsForClass:mapping.internalClass] ? @" or NSDictionary" : @""];
+                    NSString *description = [NSString stringWithFormat:@"Did not expect value (%@) of class %@ for key %@ but a %@ instance%@", value, NSStringFromClass([value class]), mapping.internalKey, NSStringFromClass(mapping.internalClass), [self mappingsForClass:mapping.internalClass] ? @" or NSDictionary" : @""];
                     *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingUnexpectedClass userInfo:@{NSLocalizedDescriptionKey: description}];
                 }
                 return NO;
