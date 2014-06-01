@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
-		<title>NSArray(EFRequires) Category Reference</title>
+		<title>NSDateFormatter(EFMapping) Category Reference</title>
 		<meta id="xcode-display" name="xcode-display" content="render"/>
 		<meta name="viewport" content="width=550" />
 		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
@@ -17,7 +17,7 @@
 			</div>
 			
 			<div id="title" role="banner">
-				<h1 class="hideInXcode">NSArray(EFRequires) Category Reference</h1>
+				<h1 class="hideInXcode">NSDateFormatter(EFMapping) Category Reference</h1>
 			</div>
 			<ul id="headerButtons" role="toolbar">
 				<li id="toc_button">
@@ -40,11 +40,11 @@
 	
 	
 	
+	<option value="class_methods">Class Methods</option>
+	
+	<option value="//api/name/ef_rfc3339DateFormatter">&nbsp;&nbsp;&nbsp;&nbsp;+ ef_rfc3339DateFormatter</option>
 	
 	
-	<option value="instance_methods">Instance Methods</option>
-	
-	<option value="//api/name/evaluateForValue:">&nbsp;&nbsp;&nbsp;&nbsp;- evaluateForValue:</option>
 	
 	
 	
@@ -70,20 +70,20 @@
 
 
 
-
-
-<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">Instance Methods</a></span><ul>
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">Class Methods</a></span><ul>
 	
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/evaluateForValue:">evaluateForValue:</a></span></li>
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/ef_rfc3339DateFormatter">ef_rfc3339DateFormatter</a></span></li>
 	
 </ul></li>
+
+
 
 
 			</ul>
 		</nav>
 		<article>
 			<div id="contents" class="isShowingTOC" role="main">
-				<a title="NSArray(EFRequires) Category Reference" name="top"></a>
+				<a title="NSDateFormatter(EFMapping) Category Reference" name="top"></a>
 				<div class="main-navigation navigation-top">
 					<ul>
 	<li><a href="../index.html">Index</a></li>
@@ -92,18 +92,15 @@
 				</div>
 				<div id="header">
 					<div class="section-header">
-						<h1 class="title title-header">NSArray(EFRequires) Category Reference</h1>
+						<h1 class="title title-header">NSDateFormatter(EFMapping) Category Reference</h1>
 					</div>		
 				</div>
 				<div id="container">	
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
-	<td class="specification-title">Conforms to</td>
-	<td class="specification-value"><a href="../Protocols/EFRequires.html">EFRequires</a></td>
-</tr><tr>
 	<td class="specification-title">Declared in</td>
-	<td class="specification-value">EFRequires.h<br />EFRequires.m</td>
+	<td class="specification-value">NSDateFormatter+EFMapping.h<br />NSDateFormatter+EFMapping.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -113,7 +110,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p><code>NSArray</code> implements the <a href="../Classes/EFRequires.html"><code>EFRequires</code></a> protocol</p>
+						<p>Often needed date formatters</p>
 					</div>
 					
 					
@@ -131,8 +128,8 @@
 						<ul class="task-list">
 							<li>
 	<span class="tooltip">
-		<code><a href="#//api/name/evaluateForValue:">&ndash;&nbsp;evaluateForValue:</a></code>
-		<span class="tooltip"><p>Evaluates if values conforms to requirement</p></span>
+		<code><a href="#//api/name/ef_rfc3339DateFormatter">+&nbsp;ef_rfc3339DateFormatter</a></code>
+		<span class="tooltip"><p>Returns a date formatter for RFC 3339 date time string (see <a href="http://tools.ietf.org/html/rfc3339">http://tools.ietf.org/html/rfc3339</a> ). Note that this does not handle all possible RFC 3339 date time strings, just one of the most common styles: &ldquo;2014-06-01T09:34:45Z&rdquo;.</p></span>
 	</span>
 	
 	
@@ -147,41 +144,29 @@
 					
 					
 					
-					
-					
 					<div class="section section-methods">
-						<a title="Instance Methods" name="instance_methods"></a>
-						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
+						<a title="Class Methods" name="class_methods"></a>
+						<h2 class="subtitle subtitle-methods">Class Methods</h2>
 						
 						<div class="section-method">
-	<a name="//api/name/evaluateForValue:" title="evaluateForValue:"></a>
-	<h3 class="subsubtitle method-title">evaluateForValue:</h3>
+	<a name="//api/name/ef_rfc3339DateFormatter" title="ef_rfc3339DateFormatter"></a>
+	<h3 class="subsubtitle method-title">ef_rfc3339DateFormatter</h3>
 	
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Evaluates if values conforms to requirement</p>
+		<p>Returns a date formatter for RFC 3339 date time string (see <a href="http://tools.ietf.org/html/rfc3339">http://tools.ietf.org/html/rfc3339</a> ). Note that this does not handle all possible RFC 3339 date time strings, just one of the most common styles: &ldquo;2014-06-01T09:34:45Z&rdquo;.</p>
 	</div>		
 	
 	
-	<div class="method-subsection method-declaration"><code>- (BOOL)evaluateForValue:(id)<em>value</em></code></div>
+	<div class="method-subsection method-declaration"><code>+ (instancetype)ef_rfc3339DateFormatter</code></div>
 	
-	
-	<div class="method-subsection arguments-section parameters">
-		<h4 class="method-subtitle parameter-title">Parameters</h4>
-		
-		<dl class="argument-def parameter-def">
-			<dt><em>value</em></dt>
-			<dd><p>Value to evaluate</p></dd>
-		</dl>
-		
-	</div>
 	
 	
 	
 	<div class="method-subsection return">
 		<h4 class="method-subtitle parameter-title">Return Value</h4>
-		<p>YES if value passes validation, NO otherwise</p>
+		<p>RFC 3339 Date formatter</p>
 	</div>
 	
 	
@@ -190,7 +175,7 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Evaluates if values conforms to requirement</p>
+		<p>Returns a date formatter for RFC 3339 date time string (see <a href="http://tools.ietf.org/html/rfc3339">http://tools.ietf.org/html/rfc3339</a> ). Note that this does not handle all possible RFC 3339 date time strings, just one of the most common styles: &ldquo;2014-06-01T09:34:45Z&rdquo;.</p>
 	</div>
 	
 	
@@ -201,13 +186,15 @@
 	
 	<div class="method-subsection declared-in-section">
 		<h4 class="method-subtitle">Declared In</h4>
-		<code class="declared-in-ref">EFRequires.h</code><br />
+		<code class="declared-in-ref">NSDateFormatter+EFMapping.h</code><br />
 	</div>				
 	
 	
 </div>
 						
 					</div>
+					
+					
 					
 					
 				</div>
