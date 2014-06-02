@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
-		<title>NSArray(EFRequires) Category Reference</title>
+		<title>EFEnumTransformer Class Reference</title>
 		<meta id="xcode-display" name="xcode-display" content="render"/>
 		<meta name="viewport" content="width=550" />
 		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
@@ -17,7 +17,7 @@
 			</div>
 			
 			<div id="title" role="banner">
-				<h1 class="hideInXcode">NSArray(EFRequires) Category Reference</h1>
+				<h1 class="hideInXcode">EFEnumTransformer Class Reference</h1>
 			</div>
 			<ul id="headerButtons" role="toolbar">
 				<li id="toc_button">
@@ -38,13 +38,23 @@
 	
 	
 	
+	<option value="properties">Properties</option>
+	
+	<option value="//api/name/enumMapping">&nbsp;&nbsp;&nbsp;&nbsp;enumMapping</option>
+	
+	
+	
+	
+	<option value="class_methods">Class Methods</option>
+	
+	<option value="//api/name/transformerWithEnumMapping:">&nbsp;&nbsp;&nbsp;&nbsp;+ transformerWithEnumMapping:</option>
 	
 	
 	
 	
 	<option value="instance_methods">Instance Methods</option>
 	
-	<option value="//api/name/evaluateForValue:">&nbsp;&nbsp;&nbsp;&nbsp;- evaluateForValue:</option>
+	<option value="//api/name/initWithEnumMapping:">&nbsp;&nbsp;&nbsp;&nbsp;- initWithEnumMapping:</option>
 	
 	
 	
@@ -68,13 +78,25 @@
 
 
 
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#properties">Properties</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/enumMapping">enumMapping</a></span></li>
+	
+</ul></li>
 
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">Class Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/transformerWithEnumMapping:">transformerWithEnumMapping:</a></span></li>
+	
+</ul></li>
 
 
 
 <li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">Instance Methods</a></span><ul>
 	
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/evaluateForValue:">evaluateForValue:</a></span></li>
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/initWithEnumMapping:">initWithEnumMapping:</a></span></li>
 	
 </ul></li>
 
@@ -83,7 +105,7 @@
 		</nav>
 		<article>
 			<div id="contents" class="isShowingTOC" role="main">
-				<a title="NSArray(EFRequires) Category Reference" name="top"></a>
+				<a title="EFEnumTransformer Class Reference" name="top"></a>
 				<div class="main-navigation navigation-top">
 					<ul>
 	<li><a href="../index.html">Index</a></li>
@@ -92,18 +114,18 @@
 				</div>
 				<div id="header">
 					<div class="section-header">
-						<h1 class="title title-header">NSArray(EFRequires) Category Reference</h1>
+						<h1 class="title title-header">EFEnumTransformer Class Reference</h1>
 					</div>		
 				</div>
 				<div id="container">	
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
-	<td class="specification-title">Conforms to</td>
-	<td class="specification-value"><a href="../Protocols/EFRequires.html">EFRequires</a></td>
+	<td class="specification-title">Inherits from</td>
+	<td class="specification-value">NSValueTransformer</td>
 </tr><tr>
 	<td class="specification-title">Declared in</td>
-	<td class="specification-value">EFRequires.h<br />EFRequires.m</td>
+	<td class="specification-value">EFEnumTransformer.h<br />EFEnumTransformer.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -113,7 +135,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p><code>NSArray</code> implements the <a href="../Classes/EFRequires.html"><code>EFRequires</code></a> protocol</p>
+						<p>A transformer to simplify mapping between strings and enum values</p>
 					</div>
 					
 					
@@ -131,10 +153,24 @@
 						<ul class="task-list">
 							<li>
 	<span class="tooltip">
-		<code><a href="#//api/name/evaluateForValue:">&ndash;&nbsp;evaluateForValue:</a></code>
-		<span class="tooltip"><p>Evaluates if values conforms to requirement</p></span>
+		<code><a href="#//api/name/transformerWithEnumMapping:">+&nbsp;transformerWithEnumMapping:</a></code>
+		<span class="tooltip"><p>Convenience method for creating a transformer to map type strings to enum values</p></span>
 	</span>
 	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/initWithEnumMapping:">&ndash;&nbsp;initWithEnumMapping:</a></code>
+		<span class="tooltip"><p>Creates a transformer to map type strings to enum values</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/enumMapping">&nbsp;&nbsp;enumMapping</a></code>
+		<span class="tooltip"><p>The enum mapping dictionary</p></span>
+	</span>
+	<span class="task-item-suffix">property</span>
 	
 </li>
 						</ul>
@@ -145,44 +181,25 @@
 					
 					
 					
-					
-					
-					
-					
 					<div class="section section-methods">
-						<a title="Instance Methods" name="instance_methods"></a>
-						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
+						<a title="Properties" name="properties"></a>
+						<h2 class="subtitle subtitle-methods">Properties</h2>
 						
 						<div class="section-method">
-	<a name="//api/name/evaluateForValue:" title="evaluateForValue:"></a>
-	<h3 class="subsubtitle method-title">evaluateForValue:</h3>
+	<a name="//api/name/enumMapping" title="enumMapping"></a>
+	<h3 class="subsubtitle method-title">enumMapping</h3>
 	
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Evaluates if values conforms to requirement</p>
+		<p>The enum mapping dictionary</p>
 	</div>		
 	
 	
-	<div class="method-subsection method-declaration"><code>- (BOOL)evaluateForValue:(id)<em>value</em></code></div>
-	
-	
-	<div class="method-subsection arguments-section parameters">
-		<h4 class="method-subtitle parameter-title">Parameters</h4>
-		
-		<dl class="argument-def parameter-def">
-			<dt><em>value</em></dt>
-			<dd><p>Value to evaluate</p></dd>
-		</dl>
-		
-	</div>
+	<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSDictionary *enumMapping</code></div>
 	
 	
 	
-	<div class="method-subsection return">
-		<h4 class="method-subtitle parameter-title">Return Value</h4>
-		<p>YES if value passes validation, NO otherwise</p>
-	</div>
 	
 	
 	
@@ -190,7 +207,7 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Evaluates if values conforms to requirement</p>
+		<p>The enum mapping dictionary</p>
 	</div>
 	
 	
@@ -201,7 +218,135 @@
 	
 	<div class="method-subsection declared-in-section">
 		<h4 class="method-subtitle">Declared In</h4>
-		<code class="declared-in-ref">EFRequires.h</code><br />
+		<code class="declared-in-ref">EFEnumTransformer.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Class Methods" name="class_methods"></a>
+						<h2 class="subtitle subtitle-methods">Class Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/transformerWithEnumMapping:" title="transformerWithEnumMapping:"></a>
+	<h3 class="subsubtitle method-title">transformerWithEnumMapping:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Convenience method for creating a transformer to map type strings to enum values</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>+ (instancetype)transformerWithEnumMapping:(NSDictionary *)<em>enumMapping</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>enumMapping</em></dt>
+			<dd><p>The enum mapping dictionary</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An enum transformer</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Convenience method for creating a transformer to map type strings to enum values</p>
+
+<p>For the enum mapping dictionary the keys should be the values from your enum wrapped in a NSNumber and the objects should be corresponding strings.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFEnumTransformer.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Instance Methods" name="instance_methods"></a>
+						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/initWithEnumMapping:" title="initWithEnumMapping:"></a>
+	<h3 class="subsubtitle method-title">initWithEnumMapping:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Creates a transformer to map type strings to enum values</p>
+	</div>		
+	
+	
+	<div class="method-subsection method-declaration"><code>- (instancetype)initWithEnumMapping:(NSDictionary *)<em>enumMapping</em></code></div>
+	
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>enumMapping</em></dt>
+			<dd><p>The enum mapping dictionary</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An enum transformer</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Creates a transformer to map type strings to enum values</p>
+
+<p>For the enum mapping dictionary the keys should be the values from your enum wrapped in a NSNumber and the objects should be corresponding strings.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">EFEnumTransformer.h</code><br />
 	</div>				
 	
 	
