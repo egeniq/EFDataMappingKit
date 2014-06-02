@@ -12,4 +12,5 @@
 #import "EFMapper.h"
 #import "EFMapping.h"
 #import "EFMappingError.h"
-
+#import "NSDateFormatter+EFMapping.h"
+#import "EFEnumTransformer.h"
