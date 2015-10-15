@@ -12,4 +12,5 @@ Pod::Spec.new do |s|
   s.public_header_files = 'EFMapping/*.h'
   s.source_files = 'EFMapping/*.{h,m}'
   s.requires_arc = true
+  s.tvos.deployment_target = '9.0'
 end
