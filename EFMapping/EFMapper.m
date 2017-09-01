@@ -120,6 +120,14 @@
 }
 
 - (BOOL)validateValues:(NSDictionary *)values forClass:(Class)aClass onObject:(id)object error:(NSError **)error {
+    if (![values isKindOfClass:[NSDictionary class]]) {
+        if (error != NULL) {
+            NSString *description = [NSString stringWithFormat:NSLocalizedString(@"Expected dictionary with values, but received %@ instead.", @""), values];
+            *error = [NSError errorWithDomain:EFMappingErrorDomain code:EFMappingInvalidValues userInfo:@{NSLocalizedDescriptionKey: description}];
+        }
+        return NO;
+    }
+    
     // Forward to registered mapper
     EFMapper *mapper = [self mapperForClass:aClass];
     if (mapper != self) {
